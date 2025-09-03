@@ -1,0 +1,5 @@
+review:
+  enabled: true
+  summarize: true
+  check-code-quality: true
+  suggest-fixes: true

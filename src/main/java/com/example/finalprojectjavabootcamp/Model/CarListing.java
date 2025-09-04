@@ -21,13 +21,13 @@ public class CarListing {
     private Integer id;
 
     private String car_type; // suv, sedan... etc
-    private String year;
-    private String mileage;
+    private Integer year;
+    private Integer mileage;
     private String make;
     private String model;
     private String color;
     private String fuel_type;
-    private String city;
+
 
 
     @OneToOne

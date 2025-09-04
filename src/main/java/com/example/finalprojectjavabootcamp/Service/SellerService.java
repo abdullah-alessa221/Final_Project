@@ -48,7 +48,7 @@ public class SellerService {
         seller.setUser(user);
 
         userRepository.save(user);
-
+        sellerRepository.save(seller);
     }
 
     public void updateSeller(Integer sellerId, SellerDTOIn dto){

@@ -21,7 +21,7 @@ public class RealEstateListing {
     private Integer id;
 
     private String real_estate_type; // land, apartment...etc
-    private Boolean for_rent;
+    private Boolean isRental;
     private Integer rooms;
     private Integer bathrooms;
     private Integer squareMeter;

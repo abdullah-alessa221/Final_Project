@@ -25,8 +25,10 @@ public class Listing {
     private String description;
     private String type; // car, real_estate
     private String status;
-    private Double price;
+    private Double least_price;
+    private String city;
 
+    // todo add the relations in the seller side
     @ManyToOne
     @JsonIgnore
     private Seller seller;

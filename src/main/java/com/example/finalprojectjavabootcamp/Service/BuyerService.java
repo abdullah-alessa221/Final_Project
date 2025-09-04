@@ -4,6 +4,7 @@ import com.example.finalprojectjavabootcamp.Api.ApiException;
 import com.example.finalprojectjavabootcamp.DTOIN.BuyerDTOIn;
 import com.example.finalprojectjavabootcamp.Model.Buyer;
 import com.example.finalprojectjavabootcamp.Model.User;
+import com.example.finalprojectjavabootcamp.Repository.BuyerRepository;
 import com.example.finalprojectjavabootcamp.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class BuyerService {
 
     private final UserRepository userRepository;
+    private final BuyerRepository buyerRepository;
 
     public void registerBuyer(BuyerDTOIn dto){
        User oldUser = userRepository.findUserByEmail(dto.getEmail());
@@ -45,6 +47,7 @@ public class BuyerService {
         buyer.setUser(user);
 
         userRepository.save(user);
+        buyerRepository.save(buyer);
     }
 
     public void updateBuyer(Integer buyerId, BuyerDTOIn dto) {

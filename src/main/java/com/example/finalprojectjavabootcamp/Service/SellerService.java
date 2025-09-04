@@ -60,7 +60,7 @@ public class SellerService {
         User oldUser = seller.getUser();
 
         oldUser.setName(dto.getName());
-        oldUser.setEmail(dto.getName());
+        oldUser.setEmail(dto.getEmail());
         oldUser.setPhone(dto.getPhone());
 
 

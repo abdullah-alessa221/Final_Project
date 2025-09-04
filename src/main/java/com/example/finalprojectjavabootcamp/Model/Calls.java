@@ -7,22 +7,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Buyer {
+public class Calls {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    @MapsId
-    @JsonIgnore
-    private User user;
+    private LocalDateTime startTime;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
-    private Set<Calls> calls;
+    private LocalDateTime endTime;
+
+    private Double duration;
+
+    @ManyToOne
+    @JsonIgnore
+    private Seller seller;
+
+    @ManyToOne
+    @JsonIgnore
+    private Buyer buyer;
+
+
 }

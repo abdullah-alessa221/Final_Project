@@ -7,31 +7,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Seller {
+public class Subscription {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String type;
 
-    private String description;
+    private Double price;
 
-    private String preferredContact;
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    private String status;
 
     @OneToOne
-    @MapsId
     @JsonIgnore
-    private User user;
+    private Seller seller;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "seller")
-    @PrimaryKeyJoinColumn
-    private Subscription subscription;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
-    private Set<Calls> calls;
 }

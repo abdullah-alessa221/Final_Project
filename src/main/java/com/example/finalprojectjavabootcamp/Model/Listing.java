@@ -55,7 +55,9 @@ import java.time.LocalDateTime;
     private RealEstateListing realEstateListing;
 
     @CreationTimestamp
+    @Column(columnDefinition = "timestamp")
     private LocalDateTime created_at;
     @UpdateTimestamp
+    @Column(columnDefinition = "timestamp")
     private LocalDateTime updated_at;
 }

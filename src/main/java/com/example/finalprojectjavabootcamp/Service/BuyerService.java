@@ -3,6 +3,7 @@ package com.example.finalprojectjavabootcamp.Service;
 import com.example.finalprojectjavabootcamp.Api.ApiException;
 import com.example.finalprojectjavabootcamp.DTOIN.BuyerDTOIn;
 import com.example.finalprojectjavabootcamp.Model.Buyer;
+import com.example.finalprojectjavabootcamp.Model.Listing;
 import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Repository.BuyerRepository;
 import com.example.finalprojectjavabootcamp.Repository.UserRepository;
@@ -10,12 +11,16 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BuyerService {
 
     private final UserRepository userRepository;
     private final BuyerRepository buyerRepository;
+    private final ListingService listingService;
 
     public void registerBuyer(BuyerDTOIn dto){
        User oldUser = userRepository.findUserByEmail(dto.getEmail());
@@ -70,5 +75,24 @@ public class BuyerService {
         user.setConfirmPassword(dto.getConfirmPassword());
 
         userRepository.save(user);
+    }
+
+    public List<Listing> getListingsByFilters(String type, String query, Boolean getOlder){
+        List<Listing> listings = listingService.getListingByStatus("listed");
+        if (type != null && !listings.isEmpty()){
+            listings.retainAll(listingService.getListingByType(type));
+        }
+        if (!query.isEmpty()  && !listings.isEmpty()){
+            listings.retainAll(listingService.searchListing(query));
+        }
+        if (listings.isEmpty()){
+            throw new ApiException("No listings found under these filters");
+        }
+        if (getOlder){
+            listings.sort(Comparator.comparing(Listing::getCreated_at).reversed());
+            return listings;
+        }
+        listings.sort(Comparator.comparing(Listing::getCreated_at));
+        return listings;
     }
 }

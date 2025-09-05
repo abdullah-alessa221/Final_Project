@@ -1,13 +1,12 @@
 package com.example.finalprojectjavabootcamp.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
 @Setter
@@ -19,10 +18,11 @@ public class Rating {
     @Id
     private Integer id;
 
+    @Column(columnDefinition = "double not null")
     private Double rating;
+    @Column(columnDefinition = "varchar(300)")
     private String review;
 
-    // todo add the relations in the user side
     @ManyToOne
     @JsonIgnore
     private Seller seller;
@@ -31,5 +31,11 @@ public class Rating {
     @JsonIgnore
     private Buyer buyer;
 
-    // private Payment payment
+    @OneToOne
+    @MapsId
+    @JsonIgnore
+    private Payment payment;
+
+    @CreationTimestamp
+    private String created_at;
 }

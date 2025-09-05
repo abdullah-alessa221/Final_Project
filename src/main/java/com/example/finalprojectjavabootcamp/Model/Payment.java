@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Pattern;
@@ -21,14 +22,22 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne()
+    @OneToOne
+    @MapsId
+    @JsonIgnore
     private Negotiation negotiation;
 
-    @ManyToOne()
+    @ManyToOne
+    @JsonIgnore
     private Buyer buyer;
 
-    @ManyToOne()
+    @ManyToOne
+    @JsonIgnore
     private Seller seller;
+
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    private Rating rating;
 
     @DecimalMin(value = "0.0", message = "totalAmount must be >= 0")
     @Column(nullable = false, columnDefinition = "decimal(19,2)")

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,21 +15,28 @@ import org.hibernate.annotations.UpdateTimestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Listing {
+@Check(constraints = "LOWER(type) IN ('car','real_estate') AND " +
+                      "LOWER(status) IN ('listed','closed','abandoned','deleted')"
+)public class Listing {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(columnDefinition = "varchar(30) not null")
     private String title;
+    @Column(columnDefinition = "varchar(300) not null")
     private String description;
-    private String type; // car, real_estate
+    @Column(columnDefinition = "varchar(11) not null")
+    private String type;
+    @Column(columnDefinition = "varchar(11) not null")
     private String status;
+    @Column(columnDefinition = "Double")
     private Double least_price;
+    @Column(columnDefinition = "varchar(30) not null")
     private String city;
 
-    // todo add the relations in the seller side
     @ManyToOne
     @JsonIgnore
     private Seller seller;

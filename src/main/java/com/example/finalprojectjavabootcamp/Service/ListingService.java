@@ -37,6 +37,10 @@ public class ListingService {
         if (!type.equalsIgnoreCase("all") && !type.equalsIgnoreCase("car") && !type.equalsIgnoreCase("real_estate")){
             throw new ApiException("Invalid type");
         }
+        if ("all".equalsIgnoreCase(type)) {
+            return listingRepository.findAll();
+        }
+
         return listingRepository.findListingsByType(type);
     }
 

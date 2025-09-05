@@ -40,6 +40,7 @@ public class NegotiationService {
         n.setBuyer(buyerRef);
         n.setSummary(body.getSummary());
 
+        //todo update those to the new status
         String status = body.getStatus();
         if (status == null) status = "active";
         n.setStatus(status);

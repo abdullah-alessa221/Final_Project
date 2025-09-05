@@ -18,7 +18,7 @@ public interface ListingRepository extends JpaRepository<Listing,Integer> {
 
     List<Listing> findListingsByType(String type);
 
-    @Query("SELECT l.title FROM Listing l WHERE l.title LIKE CONCAT('%',:query,'%')")
+    @Query("SELECT l FROM Listing l WHERE LOWER(l.title) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Listing> searchListings(String query);
 
 }

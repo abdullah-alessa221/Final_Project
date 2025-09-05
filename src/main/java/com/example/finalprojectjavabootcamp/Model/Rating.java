@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -37,5 +39,5 @@ public class Rating {
     private Payment payment;
 
     @CreationTimestamp
-    private String created_at;
+    private LocalDateTime created_at;
 }

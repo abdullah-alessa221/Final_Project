@@ -39,5 +39,6 @@ public class Rating {
     private Payment payment;
 
     @CreationTimestamp
+    @Column(columnDefinition = "timestamp")
     private LocalDateTime created_at;
 }

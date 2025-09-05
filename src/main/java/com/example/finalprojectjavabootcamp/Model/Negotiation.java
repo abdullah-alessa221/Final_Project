@@ -35,8 +35,8 @@ public class Negotiation {
     private String summary;
 
     @NotBlank
-    @Pattern(regexp = "^(active|closed|abandoned)$",
-            message = "status must be one of: active, closed, abandoned")
+    @Pattern(regexp = "^(?i)(waiting_offer|waiting_acceptance|accepted|rejected)$",
+            message = "status must be waiting_offer, waiting_acceptance, accepted or rejected")
     @Column(nullable = false, length = 20, columnDefinition = "varchar(20)")
     private String status;
 
@@ -54,5 +54,4 @@ public class Negotiation {
 
     @Column(columnDefinition = "timestamp")
     private LocalDateTime closedAt;
-
 }

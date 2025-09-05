@@ -48,4 +48,12 @@ public class RatingService {
         Rating rating = new Rating(null,ratingDTOIn.getRating(),ratingDTOIn.getReview(),seller,buyer,payment,null);
         ratingRepository.save(rating);
     }
+
+    public List<Rating> getRatingsBySellerId(Integer sellerId){
+        Seller seller = sellerRepository.findSellerById(sellerId);
+        if (seller == null){
+            throw new ApiException("Seller not found");
+        }
+        return ratingRepository.findRatingsBySeller(seller);
+    }
 }

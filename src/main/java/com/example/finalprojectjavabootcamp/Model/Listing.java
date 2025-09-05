@@ -10,6 +10,8 @@ import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -53,7 +55,7 @@ import org.hibernate.annotations.UpdateTimestamp;
     private RealEstateListing realEstateListing;
 
     @CreationTimestamp
-    private String created_at;
+    private LocalDateTime created_at;
     @UpdateTimestamp
-    private String updated_at;
+    private LocalDateTime updated_at;
 }

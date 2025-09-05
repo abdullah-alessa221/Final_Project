@@ -34,4 +34,10 @@ public class Seller {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
     private Set<Calls> calls;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
+    private Set<Listing> listings;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
+    private Set<Rating> ratings;
 }

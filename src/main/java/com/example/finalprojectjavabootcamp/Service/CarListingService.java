@@ -31,8 +31,8 @@ public class CarListingService {
             throw new ApiException("Seller not found");
         }
         String carType = "USE AI"; //todo use ai to fetch the car type
-        Listing listing = new Listing(null,carDTOIn.getTitle(), carDTOIn.getDescription(), "CAR", "Listed",carDTOIn.getLeast_price(),carDTOIn.getCity(),seller,null,null,null,null);
-        CarListing carListing = new CarListing(null,carType, carDTOIn.getYear(), carDTOIn.getMileage(),carDTOIn.getMake(),carDTOIn.getModel(),carDTOIn.getColor(),carDTOIn.getFuel_type(),null);
+        Listing listing = new Listing(null,carDTOIn.getTitle(), carDTOIn.getDescription(), "car", "listed",carDTOIn.getLeast_price(),carDTOIn.getCity(),seller,null,null,null,null);
+        CarListing carListing = new CarListing(null,carType, carDTOIn.getMake(),carDTOIn.getModel(),carDTOIn.getYear(),carDTOIn.getColor(),carDTOIn.getFuel_type(),carDTOIn.getMileage(),listing);
         listing.setCarListing(carListing);
         carListing.setListing(listing);
         listingRepository.save(listing);

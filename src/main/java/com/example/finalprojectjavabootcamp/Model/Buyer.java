@@ -25,4 +25,7 @@ public class Buyer {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
     private Set<Calls> calls;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
+    private Set<Rating> ratings;
 }

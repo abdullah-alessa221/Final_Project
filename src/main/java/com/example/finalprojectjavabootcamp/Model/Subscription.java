@@ -1,0 +1,36 @@
+package com.example.finalprojectjavabootcamp.Model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+public class Subscription {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String type;
+
+    private Double price;
+
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    private String status;
+
+    @OneToOne
+    @JsonIgnore
+    private Seller seller;
+
+}

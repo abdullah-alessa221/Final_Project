@@ -28,14 +28,29 @@ public class CallController {
         return ResponseEntity.status(200).body(new ApiResponse("Call ended successfully"));
     }
 
+
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAllCalls(){
+        return ResponseEntity.status(200).body(callService.getAllCalls());
+    }
+
+    //EXTRA:
+
     @GetMapping("/duration/{callId}")
     public ResponseEntity<?> getDuration(@PathVariable Integer callId) {
         Double callDurating = callService.getDuration(callId);
         return ResponseEntity.status(200).body(callDurating);
     }
-    @GetMapping("/get-all")
-    public ResponseEntity<?> getAllCalls(){
-        return ResponseEntity.status(200).body(callService.getAllCalls());
+
+    @GetMapping("/get-buyer-calls/{buyerId}")
+    public ResponseEntity<?> getAllBuyerCall(@PathVariable Integer buyerId){
+
+        return ResponseEntity.ok(callService.getAllBuyerCall(buyerId));
+    }
+
+    @GetMapping("/seller-calls/{sellerId}")
+    public ResponseEntity<?> getAllSellerCall(@PathVariable Integer sellerId){
+        return ResponseEntity.ok(callService.getAllSellerCall(sellerId));
     }
 
     }

@@ -6,6 +6,8 @@ import com.example.finalprojectjavabootcamp.Model.Buyer;
 import com.example.finalprojectjavabootcamp.Model.Listing;
 import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Repository.BuyerRepository;
+import com.example.finalprojectjavabootcamp.Repository.ListingRepository;
+import com.example.finalprojectjavabootcamp.Repository.NegotiationRepository;
 import com.example.finalprojectjavabootcamp.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 

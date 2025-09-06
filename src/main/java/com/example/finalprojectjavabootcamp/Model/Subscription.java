@@ -29,6 +29,8 @@ public class Subscription {
 
     private String status;
 
+    private Integer remainingDays;
+
     @OneToOne
     @JsonIgnore
     private Seller seller;

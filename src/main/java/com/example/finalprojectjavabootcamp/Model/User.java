@@ -23,15 +23,17 @@ public class User {
 //    @Column(columnDefinition = "varchar(100) not null")
     private String name;
 //
-//    @Pattern(regexp = "^[0-9]{10}$", message = "Phone must be exactly 10 digits")
-//    @NotEmpty(message = "Phone number is required")
-//    @Column(columnDefinition = "varchar(10) not null")
-    private String phone;
+
 
 //    @Email(message = "Email should be in email format")
 //    @NotEmpty(message = "Email is required")
 //    @Column(columnDefinition = "varchar(100) not null")
     private String email;
+
+    //    @Pattern(regexp = "^[0-9]{10}$", message = "Phone must be exactly 10 digits")
+//    @NotEmpty(message = "Phone number is required")
+//    @Column(columnDefinition = "varchar(10) not null")
+    private String phone;
 
 
 //    @NotEmpty(message = "Location is required")
@@ -50,6 +52,8 @@ public class User {
 
 //    @Pattern(regexp = "SELLER|BUYER|ADMIN", message = "Role must be SELLER, BUYER, or ADMIN")
     private String role;
+
+    private String status;
 
 @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 @PrimaryKeyJoinColumn

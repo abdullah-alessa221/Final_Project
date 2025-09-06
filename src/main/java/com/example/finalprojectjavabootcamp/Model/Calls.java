@@ -25,6 +25,8 @@ public class Calls {
 
     private Double duration;
 
+    private String status;
+
     @ManyToOne
     @JsonIgnore
     private Seller seller;

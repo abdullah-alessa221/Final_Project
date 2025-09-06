@@ -3,7 +3,6 @@ package com.example.finalprojectjavabootcamp.Controller;
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.Service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,17 +13,6 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
-    @PostMapping("/monthly/{sellerId}")
-    public ResponseEntity<?> subscribeMonthly(@PathVariable Integer sellerId){
-        subscriptionService.subscribeMonthly(sellerId);
-        return ResponseEntity.status(200).body(new ApiResponse("Monthly subscription activated successfully."));
-    }
-
-    @PostMapping("/yearly/{sellerId}")
-    public ResponseEntity<?> subscribeYearly(@PathVariable Integer sellerId){
-        subscriptionService.subscribeYearly(sellerId);
-        return ResponseEntity.ok(new ApiResponse("Yearly subscription activated successfully."));
-    }
 
     @PostMapping("/cancel/{subscriptionId}")
     public ResponseEntity<?> cancelSubscription(@PathVariable Integer subscriptionId) {
@@ -40,5 +28,33 @@ public class SubscriptionController {
     public ResponseEntity<?> getSubscriptionById(@PathVariable Integer id){
         return ResponseEntity.ok(subscriptionService.getSubscriptionById(id));
     }
+
+
+    //EXTRA:
+    @PostMapping("/monthly/{sellerId}")
+    public ResponseEntity<?> subscribeMonthly(@PathVariable Integer sellerId){
+        subscriptionService.subscribeMonthly(sellerId);
+        return ResponseEntity.status(200).body(new ApiResponse("Monthly subscription activated successfully."));
+    }
+
+    @PostMapping("/yearly/{sellerId}")
+    public ResponseEntity<?> subscribeYearly(@PathVariable Integer sellerId){
+        subscriptionService.subscribeYearly(sellerId);
+        return ResponseEntity.ok(new ApiResponse("Yearly subscription activated successfully."));
+    }
+
+    @PutMapping("/pause/{subscriptionId}")
+    public ResponseEntity<String> pauseSubscription(@PathVariable Integer subscriptionId) {
+        subscriptionService.pauseSubscription(subscriptionId);
+        return ResponseEntity.ok("Subscription paused successfully.");
+    }
+
+    @PutMapping("/resume/{subscriptionId}")
+    public ResponseEntity<String> resumeSubscription(@PathVariable Integer subscriptionId) {
+        subscriptionService.resumeSubscription(subscriptionId);
+        return ResponseEntity.ok("Subscription resumed successfully.");
+    }
+
+
 
 }

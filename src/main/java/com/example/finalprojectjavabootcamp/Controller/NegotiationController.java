@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
+import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.Model.Negotiation;
 import com.example.finalprojectjavabootcamp.Service.NegotiationService;
 import jakarta.validation.Valid;
@@ -19,19 +20,22 @@ public class NegotiationController {
     public ResponseEntity<?> create(@PathVariable Integer listingId,
                                               @PathVariable Integer buyerId,
                                               @Valid @RequestBody Negotiation body) {
-        return ResponseEntity.ok(service.create(listingId, buyerId, body));
+        service.create(listingId, buyerId, body);
+        return ResponseEntity.ok(new ApiResponse("negotiation created successfully"));
     }
 
     @PutMapping("update/{id}")
-    public ResponseEntity<Negotiation> update(@PathVariable Integer id,
+    public ResponseEntity<?> update(@PathVariable Integer id,
                                               @Valid @RequestBody Negotiation body) {
-        return ResponseEntity.ok(service.update(id, body));
+        service.update(id, body);
+        return ResponseEntity.ok(new ApiResponse("negotiation updated successfully"));
     }
 
     @PostMapping("/{id}/close")
     public ResponseEntity<?> close(@PathVariable Integer id,
                                              @RequestBody(required = false) Negotiation body) {
-        return ResponseEntity.ok(service.close(id, body));
+        service.close(id, body);
+        return ResponseEntity.ok(new ApiResponse("negotiation closed successfully"));
     }
 
     @GetMapping("/get/{id}")

@@ -21,7 +21,7 @@ public class NegotiationService {
     private final ListingRepository listingRepository;
     private final BuyerRepository buyerRepository;
 
-    public Negotiation create(Integer listingId, Integer buyerId, Negotiation body) {
+    public void create(Integer listingId, Integer buyerId, Negotiation body) {
         if (listingId == null) throw new ApiException("listingId is required");
         if (buyerId == null) throw new ApiException("buyerId is required");
         if (body == null) throw new ApiException("Request body is required");
@@ -57,10 +57,10 @@ public class NegotiationService {
 
         n.setClosedAt(body.getClosedAt());
 
-        return negotiationRepository.save(n);
+        negotiationRepository.save(n);
     }
 
-    public Negotiation update(Integer id, Negotiation body) {
+    public void update(Integer id, Negotiation body) {
         if (id == null) throw new ApiException("id is required for update");
         if (body == null) throw new ApiException("Request body is required");
 
@@ -78,10 +78,10 @@ public class NegotiationService {
         if (body.getStartedAt() != null)   n.setStartedAt(body.getStartedAt());
         if (body.getClosedAt() != null)    n.setClosedAt(body.getClosedAt());
 
-        return negotiationRepository.save(n);
+        negotiationRepository.save(n);
     }
 
-    public Negotiation close(Integer id, Negotiation body) {
+    public void close(Integer id, Negotiation body) {
         if (id == null) throw new ApiException("id is required to close");
 
         Negotiation n = negotiationRepository.findNegotiationById(id);
@@ -94,7 +94,7 @@ public class NegotiationService {
         if (ts == null) ts = LocalDateTime.now();
         n.setClosedAt(ts);
 
-        return negotiationRepository.save(n);
+        negotiationRepository.save(n);
     }
 
     public Negotiation findById(Integer id) {

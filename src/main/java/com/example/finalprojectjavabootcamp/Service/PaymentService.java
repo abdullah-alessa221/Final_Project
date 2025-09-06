@@ -18,7 +18,7 @@ public class PaymentService {
     private final NegotiationRepository negotiationRepository;
 
 
-    public Payment create(Integer negotiationId, Payment body) {
+    public void create(Integer negotiationId, Payment body) {
         if (negotiationId == null) throw new ApiException("negotiationId is required");
         if (body == null) throw new ApiException("Request body is required");
 
@@ -60,11 +60,10 @@ public class PaymentService {
         p.setCreatedAt(created);
 
         p.setConfirmedAt(body.getConfirmedAt());
-
-        return paymentRepository.save(p);
+        paymentRepository.save(p);
     }
 
-    public Payment update(Integer id, Payment body) {
+    public void update(Integer id, Payment body) {
         if (id == null) throw new ApiException("id is required for update");
         if (body == null) throw new ApiException("Request body is required");
 
@@ -82,10 +81,10 @@ public class PaymentService {
         if (body.getProviderRef() != null) existing.setProviderRef(body.getProviderRef());
         if (body.getConfirmedAt() != null) existing.setConfirmedAt(body.getConfirmedAt());
 
-        return paymentRepository.save(existing);
+        paymentRepository.save(existing);
     }
 
-    public Payment confirm(Integer id, Payment body) {
+    public void confirm(Integer id, Payment body) {
         if (id == null) throw new ApiException("id is required to confirm");
 
         Payment existing = paymentRepository.findPaymentById(id);
@@ -102,7 +101,7 @@ public class PaymentService {
         if (ts == null) ts = LocalDateTime.now();
         existing.setConfirmedAt(ts);
 
-        return paymentRepository.save(existing);
+        paymentRepository.save(existing);
     }
 
     public Payment findById(Integer id) {

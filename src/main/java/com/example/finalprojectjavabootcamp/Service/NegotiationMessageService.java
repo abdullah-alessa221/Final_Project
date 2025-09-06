@@ -17,7 +17,7 @@ public class NegotiationMessageService {
     private final NegotiationMessageRepository messageRepository;
     private final NegotiationRepository negotiationRepository;
 
-    public NegotiationMessage create(Integer negotiationId, NegotiationMessage body) {
+    public void create(Integer negotiationId, NegotiationMessage body) {
         if (negotiationId == null) throw new ApiException("negotiationId is required");
         if (body == null) throw new ApiException("Request body is required");
 
@@ -53,10 +53,10 @@ public class NegotiationMessageService {
         if (ts == null) ts = LocalDateTime.now();
         m.setCreatedAt(ts);
 
-        return messageRepository.save(m);
+        messageRepository.save(m);
     }
 
-    public NegotiationMessage update(Integer id, NegotiationMessage body) {
+    public void update(Integer id, NegotiationMessage body) {
         if (id == null) throw new ApiException("id is required for update");
         if (body == null) throw new ApiException("Request body is required");
 
@@ -70,7 +70,7 @@ public class NegotiationMessageService {
 
         if (body.getContent() != null) existing.setContent(body.getContent());
 
-        return messageRepository.save(existing);
+        messageRepository.save(existing);
     }
 
     public NegotiationMessage findById(Integer id) {

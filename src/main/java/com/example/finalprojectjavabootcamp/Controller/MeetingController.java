@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
+import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.Model.Meeting;
 import com.example.finalprojectjavabootcamp.Service.MeetingService;
 import jakarta.validation.Valid;
@@ -18,19 +19,22 @@ public class MeetingController {
     @PostMapping("/negotiations/{negotiationId}/meetings")
     public ResponseEntity<?> create(@PathVariable Integer negotiationId,
                                           @Valid @RequestBody Meeting body) {
-        return ResponseEntity.ok(service.create(negotiationId, body));
+        service.create(negotiationId, body);
+        return ResponseEntity.ok(new ApiResponse("meeting created successfully"));
     }
 
 
     @PatchMapping("/negotiations/meetings/{id}")
     public ResponseEntity<?> update(@PathVariable Integer id,
                                           @Valid @RequestBody Meeting body) {
-        return ResponseEntity.ok(service.update(id, body));
+        service.update(id, body);
+        return ResponseEntity.ok(new ApiResponse("meeting updated successfully"));
     }
 
 
     @GetMapping("/negotiations/meetings/{id}")
     public ResponseEntity<?> get(@PathVariable Integer id) {
+
         return ResponseEntity.ok(service.findById(id));
     }
 

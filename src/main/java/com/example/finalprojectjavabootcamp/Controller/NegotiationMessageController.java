@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
+import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.Model.NegotiationMessage;
 import com.example.finalprojectjavabootcamp.Service.NegotiationMessageService;
 import jakarta.validation.Valid;
@@ -19,16 +20,18 @@ public class NegotiationMessageController {
 
 
     @PostMapping("/negotiations/{negotiationId}/messages")
-    public ResponseEntity<NegotiationMessage> create(@PathVariable Integer negotiationId,
+    public ResponseEntity<?> create(@PathVariable Integer negotiationId,
                                                      @Valid @RequestBody NegotiationMessage body) {
-        return ResponseEntity.ok(service.create(negotiationId, body));
+        service.create(negotiationId, body);
+        return ResponseEntity.ok(new ApiResponse("message created successfully"));
     }
 
 
     @PatchMapping("/negotiations/messages/{id}")
-    public ResponseEntity<NegotiationMessage> update(@PathVariable Integer id,
+    public ResponseEntity<?> update(@PathVariable Integer id,
                                                      @Valid @RequestBody NegotiationMessage body) {
-        return ResponseEntity.ok(service.update(id, body));
+        service.update(id, body);
+        return ResponseEntity.ok(new ApiResponse("message updated successfully"));
     }
 
 

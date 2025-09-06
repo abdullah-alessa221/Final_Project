@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
+import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.DTOIN.SellerDTOIn;
 import com.example.finalprojectjavabootcamp.Service.SellerService;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +17,14 @@ public class SellerController {
     @PostMapping("/register")
     public ResponseEntity<?> registerSeller(@RequestBody SellerDTOIn dto) {
         sellerService.registerSeller(dto);
-        return ResponseEntity.status(200).body("Seller registered successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Seller registered successfully"));
     }
 
     @PutMapping("/update/{sellerId}")
     public ResponseEntity<?> updateSeller(@PathVariable Integer sellerId,
                                           @RequestBody SellerDTOIn dto) {
         sellerService.updateSeller(sellerId, dto);
-        return ResponseEntity.status(200).body("Seller updated successfully");
+        return ResponseEntity.status(200).body(new ApiResponse("Seller updated successfully"));
     }
 
 

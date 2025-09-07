@@ -14,11 +14,6 @@ public class SellerController {
 
     private final SellerService sellerService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerSeller(@RequestBody SellerDTOIn dto) {
-        sellerService.registerSeller(dto);
-        return ResponseEntity.status(200).body(new ApiResponse("Seller registered successfully"));
-    }
 
     @PutMapping("/update/{sellerId}")
     public ResponseEntity<?> updateSeller(@PathVariable Integer sellerId,
@@ -27,6 +22,17 @@ public class SellerController {
         return ResponseEntity.status(200).body(new ApiResponse("Seller updated successfully"));
     }
 
+    //EXTRA:
+    @PostMapping("/register/request-otp")
+    public ResponseEntity<?> requestOtp(@RequestBody SellerDTOIn dto){
+        sellerService.requestOtp(dto);
+        return ResponseEntity.ok(new ApiResponse("تم إرسال OTP إلى رقمك "));
+    }
 
+    @PostMapping("/register/confirm-otp")
+    public ResponseEntity<?> confirmOtp(@RequestBody SellerDTOIn dto, @RequestParam String otp){
+        sellerService.confirmOtpAndRegister(dto, otp);
+        return ResponseEntity.ok(new ApiResponse("تم تسجيلك بنجاح!"));
+    }
 
 }

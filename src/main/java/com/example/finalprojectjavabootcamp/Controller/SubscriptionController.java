@@ -44,15 +44,15 @@ public class SubscriptionController {
     }
 
     @PutMapping("/pause/{subscriptionId}")
-    public ResponseEntity<String> pauseSubscription(@PathVariable Integer subscriptionId) {
+    public ResponseEntity<?> pauseSubscription(@PathVariable Integer subscriptionId) {
         subscriptionService.pauseSubscription(subscriptionId);
-        return ResponseEntity.ok("Subscription paused successfully.");
+        return ResponseEntity.ok(new ApiResponse("Subscription paused successfully."));
     }
 
     @PutMapping("/resume/{subscriptionId}")
-    public ResponseEntity<String> resumeSubscription(@PathVariable Integer subscriptionId) {
+    public ResponseEntity<?> resumeSubscription(@PathVariable Integer subscriptionId) {
         subscriptionService.resumeSubscription(subscriptionId);
-        return ResponseEntity.ok("Subscription resumed successfully.");
+        return ResponseEntity.ok(new ApiResponse("Subscription resumed successfully."));
     }
 
 

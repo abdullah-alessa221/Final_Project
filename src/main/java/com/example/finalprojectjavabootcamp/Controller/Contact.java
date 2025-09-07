@@ -30,4 +30,10 @@ public class Contact {
     public ResponseEntity<?> getById(@PathVariable Integer id){
         return ResponseEntity.ok(contactUsService.getById(id));
     }
+
+    @DeleteMapping("/delete/{messageId}")
+    public ResponseEntity<?> deleteMessage(@PathVariable Integer messageId){
+        contactUsService.deleteMessage(messageId);
+        return ResponseEntity.ok(new ApiResponse("Message deleted successfully"));
+    }
 }

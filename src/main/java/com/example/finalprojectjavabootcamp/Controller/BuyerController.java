@@ -17,11 +17,6 @@ public class BuyerController {
 
     private final BuyerService buyerService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerBuyer(@RequestBody @Valid BuyerDTOIn dto){
-        buyerService.registerBuyer(dto);
-        return ResponseEntity.status(200).body(new ApiResponse("Buyer registered successfully"));
-    }
 
     @PutMapping("/update/{buyerId}")
     public ResponseEntity<?> updateBuyer(@PathVariable Integer buyerId,@Valid @RequestBody BuyerDTOIn dto) {
@@ -30,9 +25,21 @@ public class BuyerController {
     }
 
     //EXTRA:
-    @GetMapping("/explore")
-    public ResponseEntity<?> explore(){
-        return ResponseEntity.ok(buyerService.explore());
+
+
+    @PostMapping("/register/request-otp")
+    public ResponseEntity<?> requestOtp(@RequestBody BuyerDTOIn dto){
+        buyerService.requestOtp(dto);
+        return ResponseEntity.ok(new ApiResponse("الى رقمك OTP تم ارسال "));
+    }
+
+
+    @PostMapping("/register/confirm-otp")
+    public ResponseEntity<?> confirmOtp(
+            @RequestBody BuyerDTOIn dto,
+            @RequestParam String otp){
+        buyerService.confirmOtpAndRegister(dto, otp);
+        return ResponseEntity.ok(new ApiResponse("تم تسجيلك بنجاح!"));
     }
 
 

@@ -24,41 +24,48 @@ public class SellerService {
     private final UserRepository userRepository;
     private final ListingService listingService;
     private final NegotiationRepository negotiationRepository;
+    private final WhatsappService whatsappService;
+    private final OtpService otpService;
 
-    public void registerSeller(SellerDTOIn dto){
+    public void requestOtp(SellerDTOIn dto) {
         User oldUser = userRepository.findUserByEmail(dto.getEmail());
+        if (oldUser != null) throw new ApiException("Email already exists");
+        if (!dto.getPassword().equals(dto.getConfirmPassword())) throw new ApiException("Passwords do not match");
 
-        if (oldUser != null) {
-            throw new ApiException("Email already exists");
+        String otp = otpService.generateOtp(dto.getPhone());
+        String message = "رمز التحقق الخاص بك هو: " + otp + "\n⏰ صالح لمدة دقيقة واحدة فقط.";
+        whatsappService.sendTextMessage(message, dto.getPhone());
+    }
+
+
+    public void confirmOtpAndRegister(SellerDTOIn dto, String otp) {
+        if (!otpService.verifyOtp(dto.getPhone(), otp)) {
+            throw new ApiException("OTP غير صالح أو انتهت صلاحيته");
         }
 
         User user = new User();
-
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setLocation(dto.getLocation());
         user.setPhone(dto.getPhone());
-
-        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            throw new ApiException("Passwords do not match");
-        }
-
         user.setPassword(dto.getPassword());
         user.setConfirmPassword(dto.getConfirmPassword());
+        user.setStatus("ACTIVE");
+        user.setRole("SELLER");
 
         Seller seller = new Seller();
-
         seller.setDescription(dto.getDescription());
         seller.setPreferredContact(dto.getPreferredContact());
-
-        user.setRole("SELLER");
 
         user.setSeller(seller);
         seller.setUser(user);
 
         userRepository.save(user);
         sellerRepository.save(seller);
+
+        whatsappService.sendWelcomeMessage(user.getPhone(), user.getName());
     }
+
 
     public void updateSeller(Integer sellerId, SellerDTOIn dto){
         Seller seller = sellerRepository.findSellerById(sellerId);

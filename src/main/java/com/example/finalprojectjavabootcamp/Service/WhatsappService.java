@@ -4,6 +4,8 @@ package com.example.finalprojectjavabootcamp.Service;
 import com.example.finalprojectjavabootcamp.Api.ApiException;
 import com.example.finalprojectjavabootcamp.Model.Contact;
 import com.example.finalprojectjavabootcamp.Model.Subscription;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,17 +15,22 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class WhatsappService {
 
+    private final DateFormatterService dateFormatterService;
+
+
     @Value("${whatsapp.ultramsg.key}")
     private String whatsappKey;
     private final OkHttpClient client;
 
-    public WhatsappService() {
+    public WhatsappService(DateFormatterService dateFormatterService) {
+        this.dateFormatterService = dateFormatterService;
         this.client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
     }
+
 
 
     public void sendTextMessage(String message, String phoneNumber) throws ApiException {
@@ -74,34 +81,40 @@ public class WhatsappService {
 
         sendTextMessage(message, adminPhone);
     }
-
     public void sendSubscriptionCreatedMessage(String phoneNumber, Subscription subscription) throws ApiException {
         String message =
                 "✅ تم تفعيل اشتراكك بنجاح!\n\n" +
                         "📦 نوع الاشتراك: " + subscription.getType() + "\n" +
                         "💰 السعر: " + subscription.getPrice() + " ريال\n" +
-                        "📅 تاريخ البداية: " + subscription.getStartDate() + "\n" +
-                        "📅 تاريخ الانتهاء: " + subscription.getEndDate() + "\n" +
+                        "📅 تاريخ البداية: " + dateFormatterService.formatDate(subscription.getStartDate()) + "\n" +
+                        "⏰ وقت البداية: " + dateFormatterService.formatTime(subscription.getStartDate()) + "\n" +
+                        "📅 تاريخ الانتهاء: " + dateFormatterService.formatDate(subscription.getEndDate()) + "\n" +
+                        "⏰ وقت الانتهاء: " + dateFormatterService.formatTime(subscription.getEndDate()) + "\n" +
                         "🔖 الحالة: " + subscription.getStatus();
 
         sendTextMessage(message, phoneNumber);
     }
 
+
     public void sendSubscriptionCancelledMessage(String phoneNumber, Subscription subscription) throws ApiException {
         String message =
                 "⚠️ تم إلغاء اشتراكك.\n\n" +
                         "📦 نوع الاشتراك: " + subscription.getType() + "\n" +
-                        "📅 تاريخ الإلغاء: " + subscription.getEndDate() + "\n" +
+                        "📅 تاريخ الإلغاء: " + dateFormatterService.formatDate(subscription.getEndDate()) + "\n" +
+                        "⏰ وقت الإلغاء: " + dateFormatterService.formatTime(subscription.getEndDate()) + "\n" +
                         "🔖 الحالة الحالية: " + subscription.getStatus();
 
         sendTextMessage(message, phoneNumber);
     }
 
+
+
     public void sendSubscriptionPausedMessage(String phoneNumber, Subscription subscription) throws ApiException {
         String message =
                 "⏸️ تم إيقاف اشتراكك مؤقتًا.\n\n" +
                         "📦 نوع الاشتراك: " + subscription.getType() + "\n" +
-                        "📅 تاريخ الإيقاف: " + subscription.getEndDate() + "\n" +
+                        "📅 تاريخ الإيقاف: " + dateFormatterService.formatDate(subscription.getEndDate()) + "\n" +
+                        "⏰ وقت الإيقاف: " + dateFormatterService.formatTime(subscription.getEndDate()) + "\n" +
                         "📆 الأيام المتبقية: " + subscription.getRemainingDays() + " يوم\n" +
                         "🔖 الحالة الحالية: " + subscription.getStatus();
 
@@ -112,8 +125,10 @@ public class WhatsappService {
         String message =
                 "▶️ تم استئناف اشتراكك.\n\n" +
                         "📦 نوع الاشتراك: " + subscription.getType() + "\n" +
-                        "📅 تاريخ الاستئناف: " + subscription.getStartDate() + "\n" +
-                        "📅 تاريخ الانتهاء الجديد: " + subscription.getEndDate() + "\n" +
+                        "📅 تاريخ الاستئناف: " + dateFormatterService.formatDate(subscription.getStartDate()) + "\n" +
+                        "⏰ وقت الاستئناف: " + dateFormatterService.formatTime(subscription.getStartDate()) + "\n" +
+                        "📅 تاريخ الانتهاء الجديد: " + dateFormatterService.formatDate(subscription.getEndDate()) + "\n" +
+                        "⏰ وقت الانتهاء الجديد: " + dateFormatterService.formatTime(subscription.getEndDate()) + "\n" +
                         "🔖 الحالة الحالية: " + subscription.getStatus();
 
         sendTextMessage(message, phoneNumber);

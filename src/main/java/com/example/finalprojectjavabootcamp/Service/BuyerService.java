@@ -24,33 +24,37 @@ public class BuyerService {
     private final BuyerRepository buyerRepository;
     private final ListingService listingService;
     private final WhatsappService whatsappService;
-
-    public void registerBuyer(BuyerDTOIn dto){
-       User oldUser = userRepository.findUserByEmail(dto.getEmail());
+    private final OtpService otpService;
 
 
-        if(oldUser != null){
-            throw new ApiException("Email already exists");
+    public void requestOtp(BuyerDTOIn dto) {
+        User oldUser = userRepository.findUserByEmail(dto.getEmail());
+        if (oldUser != null) throw new ApiException("Email already exists");
+        if (!dto.getPassword().equals(dto.getConfirmPassword())) throw new ApiException("Passwords do not match");
+
+        String otp = otpService.generateOtp(dto.getPhone());
+        String message = "رمز التحقق الخاص بك هو: " + otp + "\n⏰ صالح لمدة دقيقة واحدة فقط.";
+        whatsappService.sendTextMessage(message, dto.getPhone());
+    }
+
+
+    public void confirmOtpAndRegister(BuyerDTOIn dto, String otp) {
+        if (!otpService.verifyOtp(dto.getPhone(), otp)) {
+            throw new ApiException("OTP غير صالح أو انتهت صلاحيته");
         }
 
 
         User user = new User();
-
-       user.setName(dto.getName());
-       user.setEmail(dto.getEmail());
-       user.setLocation(dto.getLocation());
-       user.setPhone(dto.getPhone());
-
-        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
-            throw new ApiException("Passwords do not match");
-        }
-
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+        user.setLocation(dto.getLocation());
+        user.setPhone(dto.getPhone());
         user.setPassword(dto.getPassword());
         user.setConfirmPassword(dto.getConfirmPassword());
+        user.setStatus("ACTIVE");
         user.setRole("BUYER");
 
         Buyer buyer = new Buyer();
-
         user.setBuyer(buyer);
         buyer.setUser(user);
 

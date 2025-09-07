@@ -5,7 +5,6 @@ import com.example.finalprojectjavabootcamp.Model.Seller;
 import com.example.finalprojectjavabootcamp.Model.Subscription;
 import com.example.finalprojectjavabootcamp.Repository.SellerRepository;
 import com.example.finalprojectjavabootcamp.Repository.SubscriptionRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final SellerRepository sellerRepository;
+    private final WhatsappService whatsappService;
 
     public void subscribeMonthly(Integer sellerId){
         Seller seller = sellerRepository.findSellerById(sellerId);
@@ -38,6 +38,7 @@ public class SubscriptionService {
         subscription.setStatus("ACTIVE");
 
         subscriptionRepository.save(subscription);
+        whatsappService.sendSubscriptionCreatedMessage(seller.getUser().getPhone(), subscription);
 
     }
 
@@ -61,6 +62,7 @@ public class SubscriptionService {
         subscription.setStatus("ACTIVE");
 
         subscriptionRepository.save(subscription);
+        whatsappService.sendSubscriptionCreatedMessage(seller.getUser().getPhone(),subscription);
 
     }
 
@@ -74,6 +76,11 @@ public class SubscriptionService {
         subscription.setEndDate(LocalDateTime.now());
 
         subscriptionRepository.save(subscription);
+
+        whatsappService.sendSubscriptionCancelledMessage(
+                subscription.getSeller().getUser().getPhone(),
+                subscription
+        );
     }
 
     public List<Subscription> getAll(){
@@ -107,6 +114,11 @@ public class SubscriptionService {
         subscription.setRemainingDays((int) daysRemaining);
 
         subscriptionRepository.save(subscription);
+
+        whatsappService.sendSubscriptionPausedMessage(
+                subscription.getSeller().getUser().getPhone(),
+                subscription
+        );
     }
 
     public void resumeSubscription(Integer subscriptionId) {
@@ -129,6 +141,13 @@ public class SubscriptionService {
         subscription.setRemainingDays(0);
 
         subscriptionRepository.save(subscription);
+
+        subscriptionRepository.save(subscription);
+
+        whatsappService.sendSubscriptionResumedMessage(
+                subscription.getSeller().getUser().getPhone(),
+                subscription
+        );
     }
 
 

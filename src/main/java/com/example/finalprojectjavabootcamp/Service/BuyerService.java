@@ -23,6 +23,7 @@ public class BuyerService {
     private final UserRepository userRepository;
     private final BuyerRepository buyerRepository;
     private final ListingService listingService;
+    private final WhatsappService whatsappService;
 
     public void registerBuyer(BuyerDTOIn dto){
        User oldUser = userRepository.findUserByEmail(dto.getEmail());
@@ -55,6 +56,8 @@ public class BuyerService {
 
         userRepository.save(user);
         buyerRepository.save(buyer);
+
+        whatsappService.sendWelcomeMessage(user.getPhone(), user.getName());
     }
 
     public void updateBuyer(Integer buyerId, BuyerDTOIn dto) {

@@ -30,10 +30,6 @@ public class BuyerController {
     }
 
     //EXTRA:
-    @GetMapping("/explore")
-    public ResponseEntity<?> explore(){
-        return ResponseEntity.ok(buyerService.explore());
-    }
 
 
 

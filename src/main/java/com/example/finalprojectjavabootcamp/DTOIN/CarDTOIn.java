@@ -38,6 +38,9 @@ public class CarDTOIn {
     @Positive(message = "Least price must be a positive number")
     private Double least_price;
 
+    @Pattern(regexp = "^(?i)(suv|sedan|hatchback|coupe|convertible|wagon|van|truck|other)$")
+    private String car_type;
+
     @NotEmpty(message = "City is required")
     private String city;
 }

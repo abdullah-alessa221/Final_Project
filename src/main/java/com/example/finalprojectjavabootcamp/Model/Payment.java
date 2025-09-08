@@ -38,6 +38,10 @@ public class Payment {
     @JsonIgnore
     private Subscription subscription;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "payment" )
+    @PrimaryKeyJoinColumn
+    private Invoice invoice;
+
     @Column(columnDefinition = "Boolean not null")
     private Boolean isSubscription;
 

@@ -28,7 +28,8 @@ public class NegotiationMessageController {
     @PostMapping("/negotiations/{negotiationId}/messages/seller")
     public ResponseEntity<?> sendBySeller(@PathVariable Integer negotiationId,
                                           @Valid @RequestBody NegotiationMessageDTOIn body) {
-        return ResponseEntity.ok(service.sendBySeller(negotiationId, body));
+        service.sendBySeller(negotiationId, body);
+        return ResponseEntity.ok(new ApiResponse("seller message sent."));
     }
 
     @GetMapping("/api/v1/negotiations/{negotiationId}/messages/all")

@@ -4,6 +4,7 @@ import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.DTOIN.BuyerDTOIn;
 import com.example.finalprojectjavabootcamp.Model.Buyer;
 import com.example.finalprojectjavabootcamp.Model.Listing;
+import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Service.BuyerService;
 import com.example.finalprojectjavabootcamp.Service.ListingService;
 import com.example.finalprojectjavabootcamp.Service.RatingService;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +25,9 @@ public class BuyerController {
     private final BuyerService buyerService;
 
 
-    @PutMapping("/update/{buyerId}")
-    public ResponseEntity<?> updateBuyer(@PathVariable Integer buyerId,@Valid @RequestBody BuyerDTOIn dto) {
-        buyerService.updateBuyer(buyerId, dto);
+    @PutMapping("/update")
+    public ResponseEntity<?> updateBuyer(@AuthenticationPrincipal User user, @Valid @RequestBody BuyerDTOIn dto) {
+        buyerService.updateBuyer(user.getId(), dto);
         return ResponseEntity.ok(new ApiResponse("Buyer updated successfully."));
     }
 

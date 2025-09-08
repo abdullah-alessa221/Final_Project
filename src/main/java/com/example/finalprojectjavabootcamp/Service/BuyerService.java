@@ -11,6 +11,7 @@ import com.example.finalprojectjavabootcamp.Repository.NegotiationRepository;
 import com.example.finalprojectjavabootcamp.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -44,13 +45,15 @@ public class BuyerService {
         }
 
 
+
         User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setLocation(dto.getLocation());
         user.setPhone(dto.getPhone());
-        user.setPassword(dto.getPassword());
-        user.setConfirmPassword(dto.getConfirmPassword());
+        String hashedPassword = new BCryptPasswordEncoder().encode(dto.getPassword());
+        user.setPassword(hashedPassword);
+        user.setConfirmPassword(hashedPassword);
         user.setStatus("ACTIVE");
         user.setRole("BUYER");
 
@@ -80,8 +83,9 @@ public class BuyerService {
             throw new ApiException("Passwords do not match");
         }
 
-        user.setPassword(dto.getPassword());
-        user.setConfirmPassword(dto.getConfirmPassword());
+        String hashedPassword = new BCryptPasswordEncoder().encode(dto.getPassword());
+        user.setPassword(hashedPassword);
+        user.setConfirmPassword(hashedPassword);
 
         userRepository.save(user);
     }

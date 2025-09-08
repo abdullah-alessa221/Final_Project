@@ -2,9 +2,11 @@ package com.example.finalprojectjavabootcamp.Controller;
 
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.DTOIN.SellerDTOIn;
+import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,10 +17,10 @@ public class SellerController {
     private final SellerService sellerService;
 
 
-    @PutMapping("/update/{sellerId}")
-    public ResponseEntity<?> updateSeller(@PathVariable Integer sellerId,
+    @PutMapping("/update")
+    public ResponseEntity<?> updateSeller(@AuthenticationPrincipal User user,
                                           @RequestBody SellerDTOIn dto) {
-        sellerService.updateSeller(sellerId, dto);
+        sellerService.updateSeller(user.getId(), dto);
         return ResponseEntity.status(200).body(new ApiResponse("Seller updated successfully"));
     }
 
@@ -48,9 +50,9 @@ public class SellerController {
         );
     }
 
-    @GetMapping("/{sellerId}/negotiations/stats")
-    public ResponseEntity<?> getMyNegotiationsStats(@PathVariable Integer sellerId) {
-        return ResponseEntity.ok(sellerService.getMyNegotiationsStats(sellerId));
+    @GetMapping("/negotiations/stats")
+    public ResponseEntity<?> getMyNegotiationsStats(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(sellerService.getMyNegotiationsStats(user.getId()));
     }
 
 }

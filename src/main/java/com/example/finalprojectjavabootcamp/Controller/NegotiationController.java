@@ -3,10 +3,12 @@ package com.example.finalprojectjavabootcamp.Controller;
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.DTOIN.AiDTOIn;
 import com.example.finalprojectjavabootcamp.DTOIN.OfferDTOIn;
+import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Service.NegotiationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -17,40 +19,40 @@ public class NegotiationController {
 
     private final NegotiationService service;
 
-    @PostMapping("/{listingId}/{buyerId}/manual")
+    @PostMapping("/{listingId}/manual")
     public ResponseEntity<?> createManual(@PathVariable Integer listingId,
-                                          @PathVariable Integer buyerId) {
-        service.createManual(listingId, buyerId);
+                                          @AuthenticationPrincipal User user) {
+        service.createManual(listingId, user.getId());
         return ResponseEntity.ok(new ApiResponse("negotiation (manual) created successfully"));
     }
 
-    @PostMapping("/{listingId}/{buyerId}/ai")
+    @PostMapping("/{listingId}/ai")
     public ResponseEntity<?> createAi(@PathVariable Integer listingId,
-                                      @PathVariable Integer buyerId,
+                                      @AuthenticationPrincipal User user,
                                       @Valid @RequestBody(required = false) AiDTOIn aiDTOIn) {
-        service.createAi(listingId, buyerId, aiDTOIn);
+        service.createAi(listingId, user.getId(), aiDTOIn);
         return ResponseEntity.ok(new ApiResponse("negotiation (ai) created and AI started the chat"));
     }
 
-    @PostMapping("/{id}/offer/{buyerId}")
+    @PostMapping("/{id}/offer")
     public ResponseEntity<?> propose(@PathVariable Integer id,
-                                     @PathVariable Integer buyerId,
+                                     @AuthenticationPrincipal User user,
                                      @Valid @RequestBody OfferDTOIn body) {
-        service.proposeOffer(id, buyerId, body.getPrice());
+        service.proposeOffer(id, user.getId(), body.getPrice());
         return ResponseEntity.ok(new ApiResponse("offer submitted, waiting for seller acceptance"));
     }
 
-    @PutMapping("/{id}/accept/{sellerId}")
+    @PutMapping("/{id}/accept")
     public ResponseEntity<?> accept(@PathVariable Integer id,
-                                    @PathVariable Integer sellerId) {
-        service.acceptOffer(id, sellerId);
+                                    @AuthenticationPrincipal User user) {
+        service.acceptOffer(id, user.getId());
         return ResponseEntity.ok(new ApiResponse("offer accepted"));
     }
 
-    @PutMapping("/{id}/reject/{sellerId}")
+    @PutMapping("/{id}/reject")
     public ResponseEntity<?> reject(@PathVariable Integer id,
-                                    @PathVariable Integer sellerId) {
-        service.rejectOffer(id, sellerId);
+                                    @AuthenticationPrincipal User user) {
+        service.rejectOffer(id, user.getId());
         return ResponseEntity.ok(new ApiResponse("offer rejected"));
     }
 
@@ -59,9 +61,9 @@ public class NegotiationController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @GetMapping("get/list/{listingId}/buyer/{buyerId}")
-    public ResponseEntity<?> list(@PathVariable Integer buyerId,
+    @GetMapping("get/list/{listingId}/buyer")
+    public ResponseEntity<?> list(@AuthenticationPrincipal User user,
                                                   @PathVariable Integer listingId) {
-        return ResponseEntity.ok(service.list(buyerId, listingId));
+        return ResponseEntity.ok(service.list(user.getId(), listingId));
     }
 }

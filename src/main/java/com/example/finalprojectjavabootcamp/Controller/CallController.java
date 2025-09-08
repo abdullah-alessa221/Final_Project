@@ -1,9 +1,11 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
+import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Service.CallService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +18,9 @@ public class CallController {
 
     private final CallService callService;
 
-    @PostMapping("/start/{buyerId}/{sellerId}")
-    public ResponseEntity<?> startCall(@PathVariable Integer buyerId, @PathVariable Integer sellerId){
-        callService.startCall(buyerId,sellerId);
+    @PostMapping("/start/{sellerId}")
+    public ResponseEntity<?> startCall(@AuthenticationPrincipal User user, @PathVariable Integer sellerId){
+        callService.startCall(user.getId(),sellerId);
         return ResponseEntity.status(200).body(new ApiResponse("Call starting"));
     }
 
@@ -42,15 +44,15 @@ public class CallController {
         return ResponseEntity.status(200).body(callDurating);
     }
 
-    @GetMapping("/get-buyer-calls/{buyerId}")
-    public ResponseEntity<?> getAllBuyerCall(@PathVariable Integer buyerId){
+    @GetMapping("/get-buyer-calls")
+    public ResponseEntity<?> getAllBuyerCall(@AuthenticationPrincipal User user){
 
-        return ResponseEntity.ok(callService.getAllBuyerCall(buyerId));
+        return ResponseEntity.ok(callService.getAllBuyerCall(user.getId()));
     }
 
-    @GetMapping("/seller-calls/{sellerId}")
-    public ResponseEntity<?> getAllSellerCall(@PathVariable Integer sellerId){
-        return ResponseEntity.ok(callService.getAllSellerCall(sellerId));
+    @GetMapping("/seller-calls")
+    public ResponseEntity<?> getAllSellerCall(@AuthenticationPrincipal User user){
+        return ResponseEntity.ok(callService.getAllSellerCall(user.getId()));
     }
 
     }

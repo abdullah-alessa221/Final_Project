@@ -36,27 +36,13 @@ public class SubscriptionController {
     @PostMapping("/monthly")
     public ResponseEntity<?> subscribeMonthly(@AuthenticationPrincipal User user){
         subscriptionService.subscribeMonthly(user.getId());
-        return ResponseEntity.status(200).body(new ApiResponse("Monthly subscription activated successfully."));
+        return ResponseEntity.status(200).body(new ApiResponse("Monthly subscription is pending, pay to activate."));
     }
 
     @PostMapping("/yearly")
     public ResponseEntity<?> subscribeYearly(@AuthenticationPrincipal User user){
         subscriptionService.subscribeYearly(user.getId());
-        return ResponseEntity.ok(new ApiResponse("Yearly subscription activated successfully."));
+        return ResponseEntity.ok(new ApiResponse("Yearly subscription is pending, pay to activate."));
     }
-
-    @PutMapping("/pause/{subscriptionId}")
-    public ResponseEntity<?> pauseSubscription(@PathVariable Integer subscriptionId) {
-        subscriptionService.pauseSubscription(subscriptionId);
-        return ResponseEntity.ok(new ApiResponse("Subscription paused successfully."));
-    }
-
-    @PutMapping("/resume/{subscriptionId}")
-    public ResponseEntity<?> resumeSubscription(@PathVariable Integer subscriptionId) {
-        subscriptionService.resumeSubscription(subscriptionId);
-        return ResponseEntity.ok(new ApiResponse("Subscription resumed successfully."));
-    }
-
-
 
 }

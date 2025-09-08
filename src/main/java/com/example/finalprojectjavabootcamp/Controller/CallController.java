@@ -67,8 +67,7 @@ public class CallController {
             return ResponseEntity.status(200).body(callService.getCallsByDateRange(start, end));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(new ApiResponse("Invalid date format. Use: yyyy-MM-ddTHH:mm:ss"));
-
-    }
+        }
     }
 
     @GetMapping("/get-by-seller-and-status")

@@ -1,6 +1,8 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
-import com.example.finalprojectjavabootcamp.Model.Negotiation;
+import com.example.finalprojectjavabootcamp.Api.ApiResponse;
+import com.example.finalprojectjavabootcamp.DTOIN.AiDTOIn;
+import com.example.finalprojectjavabootcamp.DTOIN.OfferDTOIn;
 import com.example.finalprojectjavabootcamp.Service.NegotiationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,23 +17,41 @@ public class NegotiationController {
 
     private final NegotiationService service;
 
-    @PostMapping("/{listingId}/{buyerId}")
-    public ResponseEntity<?> create(@PathVariable Integer listingId,
-                                              @PathVariable Integer buyerId,
-                                              @Valid @RequestBody Negotiation body) {
-        return ResponseEntity.ok(service.create(listingId, buyerId, body));
+    @PostMapping("/{listingId}/{buyerId}/manual")
+    public ResponseEntity<?> createManual(@PathVariable Integer listingId,
+                                          @PathVariable Integer buyerId) {
+        service.createManual(listingId, buyerId);
+        return ResponseEntity.ok(new ApiResponse("negotiation (manual) created successfully"));
     }
 
-    @PutMapping("update/{id}")
-    public ResponseEntity<Negotiation> update(@PathVariable Integer id,
-                                              @Valid @RequestBody Negotiation body) {
-        return ResponseEntity.ok(service.update(id, body));
+    @PostMapping("/{listingId}/{buyerId}/ai")
+    public ResponseEntity<?> createAi(@PathVariable Integer listingId,
+                                      @PathVariable Integer buyerId,
+                                      @Valid @RequestBody(required = false) AiDTOIn aiDTOIn) {
+        service.createAi(listingId, buyerId, aiDTOIn);
+        return ResponseEntity.ok(new ApiResponse("negotiation (ai) created and AI started the chat"));
     }
 
-    @PostMapping("/{id}/close")
-    public ResponseEntity<?> close(@PathVariable Integer id,
-                                             @RequestBody(required = false) Negotiation body) {
-        return ResponseEntity.ok(service.close(id, body));
+    @PostMapping("/{id}/offer/{buyerId}")
+    public ResponseEntity<?> propose(@PathVariable Integer id,
+                                     @PathVariable Integer buyerId,
+                                     @Valid @RequestBody OfferDTOIn body) {
+        service.proposeOffer(id, buyerId, body.getPrice());
+        return ResponseEntity.ok(new ApiResponse("offer submitted, waiting for seller acceptance"));
+    }
+
+    @PutMapping("/{id}/accept/{sellerId}")
+    public ResponseEntity<?> accept(@PathVariable Integer id,
+                                    @PathVariable Integer sellerId) {
+        service.acceptOffer(id, sellerId);
+        return ResponseEntity.ok(new ApiResponse("offer accepted"));
+    }
+
+    @PutMapping("/{id}/reject/{sellerId}")
+    public ResponseEntity<?> reject(@PathVariable Integer id,
+                                    @PathVariable Integer sellerId) {
+        service.rejectOffer(id, sellerId);
+        return ResponseEntity.ok(new ApiResponse("offer rejected"));
     }
 
     @GetMapping("/get/{id}")
@@ -39,9 +59,9 @@ public class NegotiationController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @GetMapping("get/list")
-    public ResponseEntity<?> list(@RequestParam(required = false) Integer buyerId,
-                                                  @RequestParam(required = false) Integer listingId) {
+    @GetMapping("get/list/{listingId}/buyer/{buyerId}")
+    public ResponseEntity<?> list(@PathVariable Integer buyerId,
+                                                  @PathVariable Integer listingId) {
         return ResponseEntity.ok(service.list(buyerId, listingId));
     }
 }

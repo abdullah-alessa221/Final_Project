@@ -1,4 +1,5 @@
 package com.example.finalprojectjavabootcamp.Controller;
+import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.Model.Payment;
 import com.example.finalprojectjavabootcamp.Service.PaymentService;
 import jakarta.validation.Valid;
@@ -16,23 +17,26 @@ public class PaymentController {
 
 
     @PostMapping("/negotiations/{negotiationId}/payments")
-    public ResponseEntity<Payment> create(@PathVariable Integer negotiationId,
+    public ResponseEntity<?> create(@PathVariable Integer negotiationId,
                                           @Valid @RequestBody Payment body) {
-        return ResponseEntity.ok(service.create(negotiationId, body));
+        service.create(negotiationId, body);
+        return ResponseEntity.ok(new ApiResponse("payment created successfully"));
     }
 
 
     @PutMapping("/payments/{id}")
-    public ResponseEntity<Payment> update(@PathVariable Integer id,
+    public ResponseEntity<?> update(@PathVariable Integer id,
                                           @Valid @RequestBody Payment body) {
-        return ResponseEntity.ok(service.update(id, body));
+        service.update(id, body);
+        return ResponseEntity.ok(new ApiResponse("payment updated successfully"));
     }
 
 
     @PostMapping("/payments/{id}/confirm")
-    public ResponseEntity<Payment> confirm(@PathVariable Integer id,
+    public ResponseEntity<?> confirm(@PathVariable Integer id,
                                            @RequestBody(required = false) Payment body) {
-        return ResponseEntity.ok(service.confirm(id, body));
+        service.confirm(id, body);
+        return ResponseEntity.ok(new ApiResponse("payment confirmed successfully"));
     }
 
     @GetMapping("/payments/{id}")

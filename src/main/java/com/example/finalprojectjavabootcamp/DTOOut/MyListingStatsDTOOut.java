@@ -1,4 +1,4 @@
-package com.example.finalprojectjavabootcamp.DTOOut;
+package com.example.finalprojectjavabootcamp.DTOOUT;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

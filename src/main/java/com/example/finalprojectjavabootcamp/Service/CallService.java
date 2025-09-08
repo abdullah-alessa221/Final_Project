@@ -1,154 +1,240 @@
-    package com.example.finalprojectjavabootcamp.Service;
+package com.example.finalprojectjavabootcamp.Service;
 
-    import com.example.finalprojectjavabootcamp.Api.ApiException;
-    import com.example.finalprojectjavabootcamp.DTOOUT.BuyerCallDTOOut;
-    import com.example.finalprojectjavabootcamp.DTOOUT.SellerCallDTOOut;
-    import com.example.finalprojectjavabootcamp.Model.Buyer;
-    import com.example.finalprojectjavabootcamp.Model.Calls;
-    import com.example.finalprojectjavabootcamp.Model.Seller;
-    import com.example.finalprojectjavabootcamp.Model.User;
-    import com.example.finalprojectjavabootcamp.Repository.BuyerRepository;
-    import com.example.finalprojectjavabootcamp.Repository.CallRepository;
-    import com.example.finalprojectjavabootcamp.Repository.SellerRepository;
-    import com.example.finalprojectjavabootcamp.Repository.UserRepository;
-    import com.fasterxml.jackson.core.PrettyPrinter;
-    import lombok.RequiredArgsConstructor;
-    import org.springframework.stereotype.Service;
+import com.example.finalprojectjavabootcamp.Repository.CallRepository;
+import com.example.finalprojectjavabootcamp.Repository.SellerRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.finalprojectjavabootcamp.Api.ApiException;
+import com.example.finalprojectjavabootcamp.Model.Call;
+import com.example.finalprojectjavabootcamp.Model.Seller;
+import lombok.RequiredArgsConstructor;
+import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-    import java.time.Duration;
-    import java.time.LocalDateTime;
-    import java.util.ArrayList;
-    import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
-    @Service
-    @RequiredArgsConstructor
-    public class CallService {
+@RequiredArgsConstructor
+@Service
+public class CallService {
+    @Value("${VAPI_KEY}")
+    private String vapiKey;
 
-        private final CallRepository callRepository;
-        private final BuyerRepository buyerRepository;
-        private final SellerRepository sellerRepository;
-        private final UserRepository userRepository;
+    private final CallRepository callRepository;
+    private final SellerRepository sellerRepository;
 
-        public void startCall(Integer buyerId, Integer sellerId){
-            Buyer buyer = buyerRepository.findBuyersById(buyerId);
-            Seller seller = sellerRepository.findSellerById(sellerId);
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build();
 
-            if (buyer == null) {
-                throw new ApiException("buyer not found");
-            }
-            if (seller == null) {
-                throw new ApiException("Seller not found");
-            }
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-            Calls call = new Calls();
-            call.setBuyer(buyer);
-            call.setSeller(seller);
-            call.setStartTime(LocalDateTime.now());
-            call.setDuration(0.0);
-            call.setStatus("ACTIVE");
 
-            callRepository.save(call);
-
+    public List<Call> retrieveAndUpdateAllCalls(Integer sellerId) throws ApiException {
+        Seller seller = sellerRepository.findSellerById(sellerId);
+        if (seller == null) {
+            throw new ApiException("Seller not found");
+        }
+        if (seller.getSubscription() == null || seller.getSubscription().getPhoneNumberId() == null || seller.getSubscription().getEndDate().isBefore(LocalDateTime.now())) {
+            throw new ApiException("Seller has no subscription");
         }
 
-        public void endCall(Integer callId){
-            Calls call = callRepository.findCallById(callId);
-            if (call == null) {
-                throw new ApiException("Call not found");
-            }
-            if (call.getEndTime() != null) {
-                throw new ApiException("Call already ended");
-            }
+        try {
+            List<Call> fetchedCalls = fetchCallsFromApi(seller.getSubscription().getPhoneNumberId());
 
-            call.setEndTime(LocalDateTime.now());
-
-            long seconds = Duration.between(call.getStartTime(), call.getEndTime()).toSeconds();
-            call.setDuration((double) seconds);
-
-            call.setStatus("COMPLETED");
-
-            callRepository.save(call);
-        }
-
-        public Double getDuration(Integer callId){
-            Calls call = callRepository.findById(callId)
-                    .orElseThrow(() -> new ApiException("Call not found"));
-
-            if (call.getEndTime() == null) {
-                throw new ApiException("Call is still active, end it first");
-            }
-
-
-            return call.getDuration();
-        }
-
-        public List<Calls> getAllCalls(){
-            return callRepository.findAll();
-        }
-
-
-        public List<BuyerCallDTOOut> getAllBuyerCall(Integer buyerId){
-            User user = userRepository.findUserById(buyerId);
-            if (user == null) {
-                throw new ApiException("User not found");
-            }
-            Buyer buyer = buyerRepository.findBuyersByUser(user);
-            if (buyer == null) {
-                throw new ApiException("Buyer not found");
-            }
-            List<BuyerCallDTOOut> buyerCalls = new ArrayList<>();;
-            for(Calls c: buyer.getCalls()){
-                BuyerCallDTOOut dto = new BuyerCallDTOOut();
-                dto.setCallId(c.getId());
-                dto.setStartTime(c.getStartTime());
-                dto.setEndTime(c.getEndTime());
-                dto.setDuration(c.getDuration());
-                dto.setStatus(c.getStatus());
-
-                if (c.getSeller() != null && c.getSeller().getUser() != null) {
-                    dto.setSellerName(c.getSeller().getUser().getName());
-                }else {
-                    dto.setSellerName(null);
+            List<Call> savedCalls = new ArrayList<>();
+            for (Call call : fetchedCalls) {
+                call.setSeller(seller);
+                Optional<Call> existingCall = callRepository.findCallById(call.getId());
+                if (existingCall.isEmpty()) {
+                    savedCalls.add(callRepository.save(call));
+                    System.out.println("Saved new call with ID: " + call.getId());
                 }
-
-                buyerCalls.add(dto);
             }
-            return buyerCalls;
+
+            return savedCalls;
+
+        } catch (Exception e) {
+            throw new ApiException("Error retrieving and updating calls: " + e.getMessage());
         }
-
-        public List<SellerCallDTOOut> getAllSellerCall(Integer sellerId){
-            User user = userRepository.findUserById(sellerId);
-
-            if (user == null) {
-                throw new ApiException("User not found");
-            }
-
-            Seller seller = sellerRepository.findSellerByUser(user);
-
-            if (seller == null) {
-                throw new ApiException("Seller not found");
-            }
-
-            List<SellerCallDTOOut> sellerCalls = new ArrayList<>();
-            for (Calls c : seller.getCalls()) {
-                SellerCallDTOOut dto = new SellerCallDTOOut();
-                dto.setCallId(c.getId());
-                dto.setStartTime(c.getStartTime());
-                dto.setEndTime(c.getEndTime());
-                dto.setDuration(c.getDuration());
-                dto.setStatus(c.getStatus());
-
-                if (c.getBuyer() != null && c.getBuyer().getUser() != null) {
-                    dto.setBuyerName(c.getBuyer().getUser().getName());
-                } else {
-                    dto.setBuyerName(null);
-                }
-
-
-                sellerCalls.add(dto);
-            }
-
-            return sellerCalls;
-        }
-
     }
+
+    public List<Call> getAllCalls() {
+        return callRepository.findAll();
+    }
+
+    public Optional<Call> getCallById(String id) {
+        return callRepository.findCallById(id);
+    }
+
+    public List<Call> getCallsByPhoneNumber(String phoneNumber) {
+        return callRepository.findByCustomerNumber(phoneNumber);
+    }
+
+    public List<Call> getCallsByStartedAt(LocalDateTime startedAt) {
+        return callRepository.findByStartedAt(startedAt);
+    }
+
+    public List<Call> getCallsByStatus(String status) {
+        return callRepository.findByStatus(status);
+    }
+
+    public List<Call> getCallsBySeller(Seller seller) {
+        return callRepository.findBySeller(seller);
+    }
+
+    public List<Call> getCallsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return callRepository.findByStartedAtBetween(startDate, endDate);
+    }
+
+    public List<Call> getCallsBySellerAndStatus(Seller seller, String status) {
+        return callRepository.findBySellerAndStatus(seller, status);
+    }
+
+    private List<Call> fetchCallsFromApi(String phoneNumberId) throws ApiException {
+        try {
+            HttpUrl.Builder urlBuilder = HttpUrl.parse("https://api.vapi.ai/call").newBuilder();
+            if (phoneNumberId != null && !phoneNumberId.isEmpty()) {
+                urlBuilder.addQueryParameter("phoneNumberId", phoneNumberId);
+            }
+
+            Request request = new Request.Builder()
+                    .url(urlBuilder.build())
+                    .addHeader("Authorization", "Bearer " + vapiKey)
+                    .addHeader("Accept", "application/json")
+                    .get()
+                    .build();
+
+            Response response = client.newCall(request).execute();
+
+            if (!response.isSuccessful()) {
+                String responseBody = response.body() != null ? response.body().string() : "No response body";
+                throw new ApiException("Failed to retrieve calls from API: " + response.code() + " - " + responseBody);
+            }
+
+            String responseBody = response.body().string();
+            JsonNode rootNode = objectMapper.readTree(responseBody);
+
+            List<Call> callList = new ArrayList<>();
+
+            if (rootNode.isArray()) {
+                for (JsonNode callNode : rootNode) {
+                    Call call = mapJsonToCall(callNode);
+                    if (call != null) {
+                        callList.add(call);
+                    }
+                }
+            } else {
+                Call call = mapJsonToCall(rootNode);
+                if (call != null) {
+                    callList.add(call);
+                }
+            }
+
+            return callList;
+
+        } catch (Exception e) {
+            throw new ApiException("Unexpected error while fetching calls from API: " + e.getMessage());
+        }
+    }
+
+    private Call mapJsonToCall(JsonNode callNode) {
+        try {
+            Call call = new Call();
+
+            // Extract id
+            if (callNode.has("id")) {
+                call.setId(callNode.get("id").asText());
+            } else {
+                return null; // Skip if no ID
+            }
+
+            // Extract transcript summary
+            String summary = extractTranscriptSummary(callNode);
+            call.setTranscriptSummary(summary);
+
+            // Extract customer number
+            if (callNode.has("customer") && callNode.get("customer").has("number")) {
+                call.setCustomerNumber(callNode.get("customer").get("number").asText());
+            }
+
+            // Extract cost
+            if (callNode.has("cost")) {
+                call.setCost(callNode.get("cost").asDouble());
+            } else {
+                call.setCost(0.0); // Default value
+            }
+
+            // Extract and parse startedAt
+            if (callNode.has("startedAt")) {
+                LocalDateTime startedAt = parseDateTime(callNode.get("startedAt").asText());
+                call.setStartedAt(startedAt);
+            }
+
+            // Extract and parse endedAt
+            if (callNode.has("endedAt")) {
+                LocalDateTime endedAt = parseDateTime(callNode.get("endedAt").asText());
+            }
+
+            // Extract status
+            if (callNode.has("status")) {
+                call.setStatus(callNode.get("status").asText());
+            } else {
+                call.setStatus("unknown"); // Default value
+            }
+
+            return call;
+
+        } catch (Exception e) {
+            System.err.println("Error mapping JSON to Call object: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private String extractTranscriptSummary(JsonNode callNode) {
+        // Try different possible locations for transcript summary
+        if (callNode.has("analysis") && callNode.get("analysis").has("summary")) {
+            return callNode.get("analysis").get("summary").asText();
+        }
+        if (callNode.has("transcript") && callNode.get("transcript").has("summary")) {
+            return callNode.get("transcript").get("summary").asText();
+        }
+        if (callNode.has("summary")) {
+            return callNode.get("summary").asText();
+        }
+        return null; // No summary found
+    }
+
+    private LocalDateTime parseDateTime(String dateTimeString) {
+        if (dateTimeString == null || dateTimeString.isEmpty()) {
+            return null;
+        }
+
+        try {
+            // Try ISO format first
+            return LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_DATE_TIME);
+        } catch (DateTimeParseException e1) {
+            try {
+                // Try with offset
+                return LocalDateTime.parse(dateTimeString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            } catch (DateTimeParseException e2) {
+                try {
+                    // Try custom format if needed
+                    return LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+                } catch (DateTimeParseException e3) {
+                    System.err.println("Unable to parse date: " + dateTimeString);
+                    return LocalDateTime.now(); // Default to current time
+                }
+            }
+        }
+    }
+
+}

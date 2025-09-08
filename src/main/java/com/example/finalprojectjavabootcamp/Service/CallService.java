@@ -87,7 +87,11 @@ public class CallService {
         return callRepository.findByStatus(status);
     }
 
-    public List<Call> getCallsBySeller(Seller seller) {
+    public List<Call> getCallsBySeller(Integer sellerId) {
+        Seller seller = sellerRepository.findSellerById(sellerId);
+        if (seller == null) {
+            throw new ApiException("Seller not found");
+        }
         return callRepository.findBySeller(seller);
     }
 
@@ -95,7 +99,11 @@ public class CallService {
         return callRepository.findByStartedAtBetween(startDate, endDate);
     }
 
-    public List<Call> getCallsBySellerAndStatus(Seller seller, String status) {
+    public List<Call> getCallsBySellerAndStatus(Integer sellerId, String status) {
+        Seller seller = sellerRepository.findSellerById(sellerId);
+        if (seller == null) {
+            throw new ApiException("Seller not found");
+        }
         return callRepository.findBySellerAndStatus(seller, status);
     }
 

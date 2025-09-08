@@ -1,54 +1,58 @@
 package com.example.finalprojectjavabootcamp.Controller;
+
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
-import com.example.finalprojectjavabootcamp.Model.Payment;
+import com.example.finalprojectjavabootcamp.DTOIN.PaymentDTO;
 import com.example.finalprojectjavabootcamp.Service.PaymentService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/payment")
+@RequiredArgsConstructor
 public class PaymentController {
-    private final PaymentService service;
 
+    private final PaymentService paymentService;
 
-    /*@PostMapping("/negotiations/{negotiationId}/payments")
-    public ResponseEntity<?> create(@PathVariable Integer negotiationId,
-                                          @Valid @RequestBody Payment body) {
-        service.create(negotiationId, body);
-        return ResponseEntity.ok(new ApiResponse("payment created successfully"));
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAllPayments() {
+        return ResponseEntity.status(200).body(paymentService.getAllPayments());
     }
 
+    @GetMapping("/get-payment-by-id/{id}")
+    public ResponseEntity<?> getPaymentById(@PathVariable Integer id) {
+            return ResponseEntity.status(200).body(paymentService.getPaymentById(id));
 
-    @PutMapping("/payments/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id,
-                                          @Valid @RequestBody Payment body) {
-        service.update(id, body);
-        return ResponseEntity.ok(new ApiResponse("payment updated successfully"));
     }
 
-
-    @PostMapping("/payments/{id}/confirm")
-    public ResponseEntity<?> confirm(@PathVariable Integer id,
-                                           @RequestBody(required = false) Payment body) {
-        service.confirm(id, body);
-        return ResponseEntity.ok(new ApiResponse("payment confirmed successfully"));
+    @GetMapping("/get-payment-status/{paymentId}")
+    public ResponseEntity<?> getPaymentStatus(@PathVariable String paymentId) {
+            return ResponseEntity.status(200).body(paymentService.getPaymentStatus(paymentId));
     }
 
-    @GetMapping("/payments/{id}")
-    public ResponseEntity<Payment> get(@PathVariable Integer id) {
-        return ResponseEntity.ok(service.findById(id));
+    @PostMapping("/process-payment/{negotiationId}")
+    public ResponseEntity<?> processPayment(@PathVariable Integer negotiationId, @RequestBody PaymentDTO paymentDTO) {
+            return paymentService.processPayment(negotiationId, paymentDTO);
     }
 
+    @PostMapping("/process-subscription-payment/{sellerId}/{subscriptionId}")
+    public ResponseEntity<?> processPaymentForSubscription(@PathVariable Integer sellerId, @PathVariable Integer subscriptionId, @RequestBody PaymentDTO paymentDTO) {
+            return paymentService.processPaymentForSubscription(sellerId, subscriptionId, paymentDTO);
 
-    @GetMapping("/payments")
-    public ResponseEntity<List<Payment>> list(@RequestParam(required = false) Integer buyerId,
-                                              @RequestParam(required = false) Integer sellerId,
-                                              @RequestParam(required = false) Integer negotiationId) {
-        return ResponseEntity.ok(service.list(buyerId, sellerId, negotiationId));
-    }*/
+    }
+
+    @PostMapping("/callback")
+    public ResponseEntity<?> handlePaymentCallback(
+            @RequestParam String id,
+            @RequestParam String status,
+            @RequestParam String amount,
+            @RequestParam(required = false) String message) {
+        try {
+            paymentService.handlePaymentCallback(id, status, amount, message);
+            return ResponseEntity.status(200).body(new ApiResponse("Payment callback processed successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(new ApiResponse("Callback processing failed: " + e.getMessage()));
+        }
+    }
+
 }

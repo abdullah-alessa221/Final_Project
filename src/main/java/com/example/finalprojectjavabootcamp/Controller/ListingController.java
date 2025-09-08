@@ -43,12 +43,12 @@ public class ListingController {
         return ResponseEntity.status(HttpStatus.OK).body(listingService.searchListing(query));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get-by-id/{id}")
     public ResponseEntity<?> getListingById(@PathVariable Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(listingService.getListingById(id));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteListing(@PathVariable Integer id) {
         listingService.deleteListing(id);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("Listing deleted successfully"));

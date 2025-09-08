@@ -14,11 +14,10 @@ public interface CarListingRepository extends JpaRepository<CarListing,Integer> 
     List<CarListing> findCarListingsByMake(String make);
     List<CarListing> findCarListingsByModel(String model);
     List<CarListing> findCarListingsByYear(Integer year);
+    @Query("SELECT c FROM CarListing c WHERE LOWER(c.fuel_type) = LOWER(:fuelType)")
     List<CarListing> findCarListingsByFuelType(String fuelType);
     @Query("SELECT c FROM CarListing c WHERE c.listing.city =: city")
     List<CarListing> findCarListingsByCity(String city);
-    List<CarListing> findCarListingsByPriceGreaterThanEqual(Double price);
-    List<CarListing> findCarListingsByPriceLessThanEqual(Double price);
 
     List<CarListing> findCarListingsByMileageLessThanEqual(Integer mileageIsLessThan);
 }

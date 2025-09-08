@@ -1,9 +1,11 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
+import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,15 +33,15 @@ public class SubscriptionController {
 
 
     //EXTRA:
-    @PostMapping("/monthly/{sellerId}")
-    public ResponseEntity<?> subscribeMonthly(@PathVariable Integer sellerId){
-        subscriptionService.subscribeMonthly(sellerId);
+    @PostMapping("/monthly")
+    public ResponseEntity<?> subscribeMonthly(@AuthenticationPrincipal User user){
+        subscriptionService.subscribeMonthly(user.getId());
         return ResponseEntity.status(200).body(new ApiResponse("Monthly subscription activated successfully."));
     }
 
-    @PostMapping("/yearly/{sellerId}")
-    public ResponseEntity<?> subscribeYearly(@PathVariable Integer sellerId){
-        subscriptionService.subscribeYearly(sellerId);
+    @PostMapping("/yearly")
+    public ResponseEntity<?> subscribeYearly(@AuthenticationPrincipal User user){
+        subscriptionService.subscribeYearly(user.getId());
         return ResponseEntity.ok(new ApiResponse("Yearly subscription activated successfully."));
     }
 

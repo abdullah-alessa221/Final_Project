@@ -1,19 +1,15 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
-import com.example.finalprojectjavabootcamp.DTOOUT.SellerDTOOut;
 import com.example.finalprojectjavabootcamp.Service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-public class User {
+public class UserController {
 
     private final UserService userService;
 

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Check(constraints = "status IN ('active','closed','abandoned') AND mode IN ('manual','ai-assisted')")
+@Check(constraints = "status IN ('waiting_offer','waiting_acceptance','accepted','rejected') AND mode IN ('manual','ai-assisted')")
 public class Negotiation {
 
     @Id

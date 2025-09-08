@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Repository;
 
+import com.example.finalprojectjavabootcamp.Model.Negotiation;
 import com.example.finalprojectjavabootcamp.Model.NegotiationMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,8 @@ public interface NegotiationMessageRepository extends JpaRepository<NegotiationM
 
     List<NegotiationMessage> findAllByNegotiation_IdOrderByCreatedAtAsc(Integer negotiationId);
 
-    List<NegotiationMessage> findAllByNegotiation_IdOrderByCreatedAtDesc(Integer negotiationId);
+    // Last message (descending 1st)
+    NegotiationMessage findFirstByNegotiation_IdOrderByCreatedAtDesc(Integer negotiationId);
+
 
 }

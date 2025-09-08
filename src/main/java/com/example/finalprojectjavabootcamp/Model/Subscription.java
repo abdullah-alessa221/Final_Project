@@ -32,6 +32,8 @@ public class Subscription {
 
     private Integer remainingDays;
 
+    private String phoneNumberId;
+
     @OneToOne
     @JsonIgnore
     private Seller seller;

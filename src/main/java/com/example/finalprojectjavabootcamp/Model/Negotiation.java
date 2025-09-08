@@ -19,7 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Check(constraints = "status IN ('waiting_offer','waiting_acceptance','accepted','rejected') AND mode IN ('manual','ai-assisted')")
+@Check(constraints = "LOWER(status) IN ('waiting_offer','waiting_acceptance','accepted','rejected') AND mode IN ('manual','ai-assisted')")
 public class Negotiation {
 
     @Id

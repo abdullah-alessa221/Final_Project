@@ -25,7 +25,7 @@ public class NegotiationMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Negotiation negotiation;
 
     @Pattern(regexp = "^(buyer|seller|ai)$", message = "senderType must be buyer, seller, or ai")

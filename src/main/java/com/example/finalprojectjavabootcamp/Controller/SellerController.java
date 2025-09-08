@@ -35,4 +35,22 @@ public class SellerController {
         return ResponseEntity.ok(new ApiResponse("تم تسجيلك بنجاح!"));
     }
 
+    @GetMapping("/{sellerId}/listings/filter")
+    public ResponseEntity<?> getMyListingsByFilters(
+            @PathVariable String sellerId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false, defaultValue = "") String query,
+            @RequestParam(required = false, defaultValue = "false") Boolean getOlder
+    ) {
+        return ResponseEntity.ok(
+                sellerService.getMyListingsByFilters(sellerId, status, type, query, getOlder)
+        );
+    }
+
+    @GetMapping("/{sellerId}/negotiations/stats")
+    public ResponseEntity<?> getMyNegotiationsStats(@PathVariable Integer sellerId) {
+        return ResponseEntity.ok(sellerService.getMyNegotiationsStats(sellerId));
+    }
+
 }

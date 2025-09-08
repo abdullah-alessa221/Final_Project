@@ -2,17 +2,12 @@ package com.example.finalprojectjavabootcamp.Service;
 
 import com.example.finalprojectjavabootcamp.Api.ApiException;
 import com.example.finalprojectjavabootcamp.DTOIN.AiDTOIn;
-import com.example.finalprojectjavabootcamp.Model.Buyer;
-import com.example.finalprojectjavabootcamp.Model.Listing;
-import com.example.finalprojectjavabootcamp.Model.Negotiation;
-import com.example.finalprojectjavabootcamp.Model.NegotiationMessage;
-import com.example.finalprojectjavabootcamp.Repository.BuyerRepository;
-import com.example.finalprojectjavabootcamp.Repository.ListingRepository;
-import com.example.finalprojectjavabootcamp.Repository.NegotiationMessageRepository;
-import com.example.finalprojectjavabootcamp.Repository.NegotiationRepository;
+import com.example.finalprojectjavabootcamp.Model.*;
+import com.example.finalprojectjavabootcamp.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,8 +70,6 @@ public class NegotiationService {
 
 
     public void createAi(Integer listingId, Integer buyerId, AiDTOIn aiDTOIn) {
-        if (listingId == null) throw new ApiException("listingId is required");
-        if (buyerId == null) throw new ApiException("buyerId is required");
 
         Listing listingRef = listingRepository.getListingById(listingId);
         if (listingRef == null) throw new ApiException("Listing not found: " + listingId);
@@ -84,36 +77,31 @@ public class NegotiationService {
         Buyer buyerRef = buyerRepository.findBuyersById(buyerId);
         if (buyerRef == null) throw new ApiException("Buyer not found: " + buyerId);
 
-        // create negotiation
         Negotiation n = new Negotiation();
         n.setListing(listingRef);
         n.setBuyer(buyerRef);
-
-        String summary = null;
-        if (aiDTOIn != null) summary = aiDTOIn.getAdditionalNote();
-        n.setSummary(summary);
-
+        n.setSummary(aiDTOIn != null ? aiDTOIn.getAdditionalNote() : null);
         n.setStatus("waiting_offer");
         n.setMode("ai-assisted");
         n.setAgreedPrice(null);
         n.setStartedAt(LocalDateTime.now());
         n.setClosedAt(null);
-
         negotiationRepository.save(n);
 
         StringBuilder userMsg = new StringBuilder();
-        userMsg.append("ابدأ أول رسالة تفاوضية قصيرة باسم المشتري، واسأل عن التفاصيل المؤثرة على السعر، ");
-        userMsg.append("ويمكنك اقتراح عرض مبدئي مناسب دون الإفصاح عن وجود targetPrice.\n");
+
+        userMsg.append("بيانات الإعلان:\n");
+        appendListingBlock(userMsg, listingRef);
+
+        userMsg.append("\nسجل المحادثة كاملًا (من الأقدم إلى الأحدث):\n");
+        userMsg.append("لا يوجد حتى الآن.\n");
 
         if (aiDTOIn != null) {
             if (aiDTOIn.getAdditionalNote() != null) {
-                userMsg.append("\n[PRIVATE additionalNote] ")
-                        .append(aiDTOIn.getAdditionalNote());
+                userMsg.append("\n[PRIVATE additionalNote] ").append(aiDTOIn.getAdditionalNote());
             }
             if (aiDTOIn.getTargetPrice() != null) {
-                userMsg.append("\n[PRIVATE targetPrice] ")
-                        .append(aiDTOIn.getTargetPrice())
-                        .append(" SAR");
+                userMsg.append("\n[PRIVATE targetPrice] ").append(aiDTOIn.getTargetPrice()).append(" SAR");
             }
         }
 
@@ -129,11 +117,66 @@ public class NegotiationService {
         messageRepository.save(aiMsg);
     }
 
+    private void appendListingBlock(StringBuilder sb, Listing listing) {
+        sb.append("- العنوان: ").append(show(listing.getTitle())).append("\n");
+        sb.append("- النوع: ").append(show(listing.getType())).append("\n");
+        sb.append("- الحالة (الإعلان): ").append(show(listing.getStatus())).append("\n");
+        sb.append("- المدينة: ").append(show(listing.getCity())).append("\n");
+        sb.append("- أقل سعر معلَن (SAR): ").append(show(listing.getLeast_price())).append("\n");
+        sb.append("- الوصف: ").append(show(listing.getDescription())).append("\n");
+
+        String t = listing.getType() == null ? "" : listing.getType().toLowerCase();
+
+        if ("car".equals(t) && listing.getCarListing() != null) {
+            Object car = listing.getCarListing();
+            sb.append("\n[تفاصيل السيارة]\n");
+            sb.append("  الماركة/الموديل: ").append(show(tryGetStr(car, "getMake"))).append(" / ")
+                    .append(show(tryGetStr(car, "getModel"))).append("\n");
+            sb.append("  السنة: ").append(show(tryGetStr(car, "getYear"))).append("\n");
+            sb.append("  العداد: ").append(show(tryGetStr(car, "getMileage"))).append("\n");
+            sb.append("  اللون: ").append(show(tryGetStr(car, "getColor"))).append("\n");
+            sb.append("  الوقود: ").append(show(tryGetStr(car, "getFuelType", "getFuel_type"))).append("\n");
+            sb.append("  السعر المطلوب (SAR): ").append(show(tryGetStr(car, "getPrice"))).append("\n");
+            sb.append("  وصف إضافي: ").append(show(tryGetStr(car, "getDescription"))).append("\n");
+
+        } else if ("real_estate".equals(t) && listing.getRealEstateListing() != null) {
+            Object re = listing.getRealEstateListing();
+            sb.append("\n[تفاصيل العقار]\n");
+            sb.append("  الموقع: ").append(show(tryGetStr(re, "getLocation", "getCity"))).append("\n");
+            sb.append("  المساحة (م²): ").append(show(tryGetStr(re, "getArea", "getSquareMeter"))).append("\n");
+            sb.append("  السعر المطلوب (SAR): ").append(show(tryGetStr(re, "getPrice", "getLeast_price"))).append("\n");
+            sb.append("  نوع العقار: ").append(show(tryGetStr(re, "getType"))).append("\n");
+            sb.append("  إيجار؟ ").append(show(tryGetStr(re, "getIsRental"))).append("\n");
+            sb.append("  الغرف/الدورات: ").append(show(tryGetStr(re, "getRooms"))).append(" / ")
+                    .append(show(tryGetStr(re, "getBathrooms"))).append("\n");
+            sb.append("  الحي: ").append(show(tryGetStr(re, "getNeighborhood"))).append("\n");
+            sb.append("  وصف إضافي: ").append(show(tryGetStr(re, "getDescription"))).append("\n");
+        }
+    }
+
+
+    private static String show(Object v) {
+        return v == null ? "-" : String.valueOf(v);
+    }
+
+    private String tryGetStr(Object obj, String... getters) {
+        if (obj == null || getters == null) return null;
+        int i = 0;
+        while (i < getters.length) {
+            String g = getters[i];
+            try {
+                java.lang.reflect.Method m = obj.getClass().getMethod(g);
+                Object val = m.invoke(obj);
+                if (val != null) return String.valueOf(val);
+            } catch (Exception ignored) {}
+            i = i + 1;
+        }
+        return null;
+    }
+
+
+
     public void proposeOffer(Integer negotiationId, Integer buyerId, Double price) {
-        if (negotiationId == null) throw new ApiException("negotiationId is required");
-        if (buyerId == null) throw new ApiException("buyerId is required");
-        if (price == null) throw new ApiException("price is required");
-        if (price.doubleValue() <= 0) throw new ApiException("price must be positive");
 
         Negotiation n = negotiationRepository.findNegotiationById(negotiationId);
         if (n == null) throw new ApiException("Negotiation not found: " + negotiationId);
@@ -141,7 +184,6 @@ public class NegotiationService {
         if (n.getBuyer() == null) throw new ApiException("Negotiation has no buyer");
         if (!buyerId.equals(n.getBuyer().getId())) throw new ApiException("buyerId must match the negotiation buyer id");
 
-        // ما نسمح بعرض جديد إلا إذا لسه في مرحلة انتظار عرض
         String st = n.getStatus();
         if (st == null) st = "waiting_offer";
         if (!st.equals("waiting_offer")) {
@@ -152,7 +194,6 @@ public class NegotiationService {
         n.setStatus("waiting_acceptance");
         negotiationRepository.save(n);
 
-        // (اختياري) نخزن رسالة في الشات تثبت العرض
         NegotiationMessage m = new NegotiationMessage();
         m.setNegotiation(n);
         m.setSenderType("buyer");
@@ -232,6 +273,12 @@ public class NegotiationService {
         m.setCreatedAt(LocalDateTime.now());
         messageRepository.save(m);
     }
+
+
+    private String nvl(Object v) {
+        return v == null ? "-" : String.valueOf(v);
+    }
+
 
 
     public Negotiation findById(Integer id) {

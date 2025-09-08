@@ -14,21 +14,20 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Buyer {
+public class SearchResults {
+
     @Id
     private Integer id;
 
+
+    private Integer rank;
+
+
     @OneToOne
-    @MapsId
+    private Listing listing;
+
+    @ManyToOne
     @JsonIgnore
-    private User user;
+    private Search search;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
-    private Set<Calls> calls;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
-    private Set<Rating> ratings;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
-    private Set<Search> searches;
 }

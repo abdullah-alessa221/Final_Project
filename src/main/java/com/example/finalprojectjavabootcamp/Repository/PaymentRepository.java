@@ -18,4 +18,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     List<Payment> findAllBySeller_Id(Integer sellerId);
 
     List<Payment> findAllByBuyer_IdAndSeller_Id(Integer buyerId, Integer sellerId);
+
+    Payment findPaymentByPaymentId(String paymentId);
 }

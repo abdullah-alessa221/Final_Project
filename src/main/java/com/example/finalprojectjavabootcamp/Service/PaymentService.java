@@ -4,6 +4,7 @@ import com.example.finalprojectjavabootcamp.DTOIN.InvoiceDTO;
 import com.example.finalprojectjavabootcamp.Model.Negotiation;
 import com.example.finalprojectjavabootcamp.Model.Payment;
 import com.example.finalprojectjavabootcamp.Model.Subscription;
+import com.example.finalprojectjavabootcamp.Repository.NegotiationRepository;
 import com.example.finalprojectjavabootcamp.Repository.PaymentRepository;
 import com.example.finalprojectjavabootcamp.Repository.SubscriptionRepository;
 import com.fasterxml.jackson.databind.JsonNode;

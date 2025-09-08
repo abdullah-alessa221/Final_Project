@@ -17,11 +17,8 @@ import java.util.Set;
 public class SearchResults {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-
-    private Integer rank;
-
 
     @OneToOne
     private Listing listing;

@@ -37,6 +37,6 @@ public class Subscription {
     private Seller seller;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subscription")
-    private Set<Payment> payment;
+    private Set<Payment> payments;
 
 }

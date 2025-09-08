@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
 @Entity
 @Check(constraints = "status IN ('pending','confirmed','failed','cancelled')")
 public class Payment {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne
@@ -30,7 +30,7 @@ public class Payment {
     @JsonIgnore
     private Negotiation negotiation;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "payment" )
     @PrimaryKeyJoinColumn
     private Rating rating;
 

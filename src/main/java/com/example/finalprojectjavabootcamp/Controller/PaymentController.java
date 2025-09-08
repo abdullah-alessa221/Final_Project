@@ -16,7 +16,7 @@ public class PaymentController {
     private final PaymentService service;
 
 
-    @PostMapping("/negotiations/{negotiationId}/payments")
+    /*@PostMapping("/negotiations/{negotiationId}/payments")
     public ResponseEntity<?> create(@PathVariable Integer negotiationId,
                                           @Valid @RequestBody Payment body) {
         service.create(negotiationId, body);
@@ -50,5 +50,5 @@ public class PaymentController {
                                               @RequestParam(required = false) Integer sellerId,
                                               @RequestParam(required = false) Integer negotiationId) {
         return ResponseEntity.ok(service.list(buyerId, sellerId, negotiationId));
-    }
+    }*/
 }

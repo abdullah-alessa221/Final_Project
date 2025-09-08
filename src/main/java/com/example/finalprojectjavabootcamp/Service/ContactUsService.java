@@ -13,10 +13,15 @@ import java.util.List;
 public class ContactUsService {
 
     private final ContactUsRepository contactUsRepository;
+    private final WhatsappService whatsappService;
 
-    public void createNew(Contact contactUs){
-         contactUsRepository.save(contactUs);
+    public void createNew(Contact contact) {
+
+        whatsappService.sendContactMessage(contact);
+        contactUsRepository.save(contact);
+
     }
+
 
     public List<Contact> getAll(){
         return contactUsRepository.findAll();
@@ -30,5 +35,15 @@ public class ContactUsService {
         }
 
         return contactUs;
+    }
+
+    public void deleteMessage(Integer messageId){
+        Contact contact = contactUsRepository.findContactUsById(messageId);
+
+        if(contact == null){
+            throw new ApiException("Message not found");
+        }
+
+        contactUsRepository.delete(contact);
     }
 }

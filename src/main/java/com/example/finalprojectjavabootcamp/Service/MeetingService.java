@@ -18,7 +18,7 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
     private final NegotiationRepository negotiationRepository;
 
-    public Meeting create(Integer negotiationId, Meeting body) {
+    public void create(Integer negotiationId, Meeting body) {
         if (negotiationId == null) throw new ApiException("negotiationId is required");
         if (body == null) throw new ApiException("Request body is required");
         if (body.getNegotiation() != null) {
@@ -39,10 +39,10 @@ public class MeetingService {
         m.setScheduledAt(body.getScheduledAt());
 //        m.setLink(body.getLink());
 
-        return meetingRepository.save(m);
+        meetingRepository.save(m);
     }
 
-    public Meeting update(Integer id, Meeting body) {
+    public void update(Integer id, Meeting body) {
         if (id == null) throw new ApiException("id is required for update");
         if (body == null) throw new ApiException("Request body is required");
 
@@ -64,7 +64,7 @@ public class MeetingService {
 //            existing.setLink(body.getLink());
 //        }
 
-        return meetingRepository.save(existing);
+        meetingRepository.save(existing);
     }
 
     public Meeting findById(Integer id) {

@@ -1,6 +1,6 @@
 package com.example.finalprojectjavabootcamp.Service;
 
-import com.example.finalprojectjavabootcamp.DTOIN.InvoiceDTO;
+import com.example.finalprojectjavabootcamp.DTOIN.PaymentDTO;
 import com.example.finalprojectjavabootcamp.Model.Negotiation;
 import com.example.finalprojectjavabootcamp.Model.Payment;
 import com.example.finalprojectjavabootcamp.Model.Subscription;
@@ -75,7 +75,7 @@ public class PaymentService {
 
 
 
-    public ResponseEntity<String> processPayment(Integer negotiationId , InvoiceDTO invoiceDTO){
+    public ResponseEntity<String> processPayment(Integer negotiationId , PaymentDTO paymentDTO){
 
         Negotiation negotiation = negotiationRepository.findNegotiationById(negotiationId);
 
@@ -92,12 +92,12 @@ public class PaymentService {
 
         //create the body
         String requestBody =String.format("source[type]=card&source[name]=%s&source[number]=%s&source[cvc]=%s&source[month]=%s&source[year]=%s&amount=%d&currency=%s&callback_url=%s",
-                invoiceDTO.getCardName(),
-                invoiceDTO.getCardNumber(),
-                invoiceDTO.getCardCvc(),
-                invoiceDTO.getCardMonth(),
-                invoiceDTO.getCardYear(),
-                (int) (negotiation.getAgreedPrice() * 1),
+                paymentDTO.getCardName(),
+                paymentDTO.getCardNumber(),
+                paymentDTO.getCardCvc(),
+                paymentDTO.getCardMonth(),
+                paymentDTO.getCardYear(),
+                (int) (negotiation.getAgreedPrice() * 100),
                 "SAR",
                 callbackUrl);
 
@@ -125,7 +125,7 @@ public class PaymentService {
         String paymentId = root.path("id").asText(null);
 
 
-        Payment payment = new Payment(null,negotiation,null,null,false,negotiation.getAgreedPrice(),"pending",paymentId,null);
+        Payment payment = new Payment(null,negotiation,null,null,null,false,negotiation.getAgreedPrice(),"pending",paymentId,null);
         paymentRepository.save(payment);
 
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody().toString());
@@ -157,7 +157,7 @@ public class PaymentService {
         }
     }
 
-    public ResponseEntity<String> processPaymentForSubscription(Integer SellerId, Integer subscriptionId, InvoiceDTO invoiceDTO) {
+    public ResponseEntity<String> processPaymentForSubscription(Integer SellerId, Integer subscriptionId, PaymentDTO paymentDTO) {
         Subscription subscription = subscriptionRepository.findSubscriptionById(subscriptionId);
         if (subscription == null){
             throw new ApiException("subscription not found");
@@ -168,11 +168,11 @@ public class PaymentService {
 
         //create the body
         String requestBody =String.format("source[type]=card&source[name]=%s&source[number]=%s&source[cvc]=%s&source[month]=%s&source[year]=%s&amount=%d&currency=%s&callback_url=%s",
-                invoiceDTO.getCardName(),
-                invoiceDTO.getCardNumber(),
-                invoiceDTO.getCardCvc(),
-                invoiceDTO.getCardMonth(),
-                invoiceDTO.getCardYear(),
+                paymentDTO.getCardName(),
+                paymentDTO.getCardNumber(),
+                paymentDTO.getCardCvc(),
+                paymentDTO.getCardMonth(),
+                paymentDTO.getCardYear(),
                 (int)(amount * 100),
                 "SAR",
                 callbackUrl);
@@ -192,7 +192,7 @@ public class PaymentService {
         String paymentId = root.path("id").asText(null);
 
 
-        Payment payment = new Payment(null,null,null,subscription,true,amount,"pending",paymentId,null);
+        Payment payment = new Payment(null,null,null,subscription,null,true,amount,"pending",paymentId,null);
         paymentRepository.save(payment);
 
         return ResponseEntity.status(resp.getStatusCode()).body(root.toString());

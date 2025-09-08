@@ -7,9 +7,11 @@ import com.adobe.pdfservices.operation.pdfjobs.jobs.DocumentMergeJob;
 import com.adobe.pdfservices.operation.pdfjobs.params.documentmerge.*;
 import com.adobe.pdfservices.operation.pdfjobs.result.DocumentMergeResult;
 import com.example.finalprojectjavabootcamp.Api.ApiException;
-import com.example.finalprojectjavabootcamp.DTOOUT.CarInvoiceDTOOut;
+import com.example.finalprojectjavabootcamp.DTOIN.InvoiceDTO;
 import com.example.finalprojectjavabootcamp.Model.Invoice;
+import com.example.finalprojectjavabootcamp.Model.Payment;
 import com.example.finalprojectjavabootcamp.Repository.InvoiceRepository;
+import com.example.finalprojectjavabootcamp.Repository.PaymentRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.IOUtils;
@@ -26,6 +28,7 @@ import java.util.UUID;
 public class FileService {
 
     private final InvoiceRepository invoiceRepository;
+    private final PaymentRepository paymentRepository;
 
     private PDFServices pdfServices;
 
@@ -41,10 +44,22 @@ public class FileService {
         pdfServices = new PDFServices(credentials);
     }
 
-    public Invoice createInvoice(CarInvoiceDTOOut invoiceDTO) throws ApiException {
+    public Invoice createInvoice(Integer paymentId,String filePath) throws ApiException {
         InputStream inputStream;
         Asset asset;
         JSONObject jsonDataForMerge;
+
+        Payment payment = paymentRepository.findPaymentById(paymentId);
+        InvoiceDTO invoiceDTO = new InvoiceDTO(
+                payment.getNegotiation().getBuyer().getUser().getName(),
+                payment.getNegotiation().getBuyer().getUser().getPhone(),
+                payment.getNegotiation().getListing().getSeller().getUser().getName(),
+                payment.getNegotiation().getListing().getSeller().getUser().getPhone(),
+                payment.getTotalAmount(),
+                payment.getCreated_at().toString(),
+                filePath
+        );
+
 
         try {
             inputStream = new File("src/main/resources/Templates/invoice.docx")
@@ -77,7 +92,7 @@ public class FileService {
             File folder = new File(folderPath);
             if (!folder.exists()) folder.mkdirs();
 
-            String fileName = "invoice_" + invoiceDTO.getId() + "_" + UUID.randomUUID() + ".pdf";
+            String fileName = "invoice_" + payment.getId() + "_" + UUID.randomUUID() + ".pdf";
             File outputFile = new File(folderPath + fileName);
 
             try (FileOutputStream fos = new FileOutputStream(outputFile)) {
@@ -85,12 +100,7 @@ public class FileService {
             }
 
             Invoice invoice = new Invoice();
-            invoice.setBuyerName(invoiceDTO.getBuyerName());
-            invoice.setBuyerPhone(invoiceDTO.getBuyerPhone());
-            invoice.setSellerName(invoiceDTO.getSellerName());
-            invoice.setSellerPhone(invoiceDTO.getSellerPhone());
-            invoice.setPrice(invoiceDTO.getPrice());
-            invoice.setDate(invoiceDTO.getDate());
+            invoice.setPayment(payment);
             invoice.setFilePath(outputFile.getAbsolutePath());
 
             return invoiceRepository.save(invoice);

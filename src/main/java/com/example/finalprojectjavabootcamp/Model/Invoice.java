@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,20 +18,16 @@ import java.time.LocalDateTime;
 public class Invoice {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+
+    @OneToOne
+    @MapsId
+    @JsonIgnore
+    private Payment payment;
 
     @Column(columnDefinition = "varchar(255)")
     private String filePath;
-
-
-
-    @ManyToOne
-    private Buyer buyer;
-
-    @ManyToOne
-    private Seller seller;
-
 
     @CreationTimestamp
     @Column(columnDefinition = "timestamp")

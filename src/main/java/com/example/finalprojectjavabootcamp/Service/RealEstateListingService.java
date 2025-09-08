@@ -31,7 +31,7 @@ public class RealEstateListingService {
             throw new ApiException("Seller not found");
         }
 
-        Listing listing = new Listing(null,realEstateDTOIn.getTitle(), realEstateDTOIn.getDescription(), "real_estate", "Listed",realEstateDTOIn.getLeast_price(),realEstateDTOIn.getCity(),seller,null,null,null,null);
+        Listing listing = new Listing(null,realEstateDTOIn.getTitle(), realEstateDTOIn.getDescription(), "real_estate", "Listed",realEstateDTOIn.getLeast_price(),realEstateDTOIn.getCity(),seller,null,null,null,null,null);
         RealEstateListing realEstateListing = new RealEstateListing(null,realEstateDTOIn.getType(),realEstateDTOIn.getIsRental(),realEstateDTOIn.getRooms(), realEstateDTOIn.getBathrooms(), realEstateDTOIn.getSquareMeter(),realEstateDTOIn.getCity(), realEstateDTOIn.getNeighborhood(), null);
         listing.setRealEstateListing(realEstateListing);
         realEstateListing.setListing(listing);

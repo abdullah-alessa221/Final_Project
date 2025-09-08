@@ -97,7 +97,7 @@ public class PaymentService {
                 paymentDTO.getCardCvc(),
                 paymentDTO.getCardMonth(),
                 paymentDTO.getCardYear(),
-                (int) (negotiation.getAgreedPrice() * 1),
+                (int) (negotiation.getAgreedPrice() * 100),
                 "SAR",
                 callbackUrl);
 

@@ -54,7 +54,6 @@ public class WhatsappService {
                         + response.code() + " | الرد: " + responseBody);
             }
 
-            System.out.println("تم إرسال الرسالة بنجاح: " + responseBody);
 
         } catch (Exception e) {
             throw new ApiException("خطأ أثناء محاولة الإرسال للواتساب: " + e.getMessage());

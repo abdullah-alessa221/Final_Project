@@ -28,7 +28,7 @@ public class OtpService {
 
     //Generate OTP
     public String generateOtp(String phoneNumber) {
-        String otp = String.format("%05d", random.nextInt(999999));
+        String otp = String.format("%05d", random.nextInt(100000));
         otpStorage.put(phoneNumber, new OtpEntry(otp, LocalDateTime.now().plusMinutes(1)));
         return otp;
     }

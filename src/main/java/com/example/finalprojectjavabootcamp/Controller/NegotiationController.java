@@ -66,4 +66,16 @@ public class NegotiationController {
                                                   @PathVariable Integer listingId) {
         return ResponseEntity.ok(service.list(user.getId(), listingId));
     }
+
+    @PutMapping("/{negotiationId}/ai/disable")
+    public ResponseEntity<?> disable(@PathVariable Integer negotiationId) {
+        service.disable(negotiationId);
+        return ResponseEntity.ok(new ApiResponse("Negotiation AI has been disable successfully"));
+    }
+
+    @PutMapping("/{negotiationId}/ai/enable")
+    public ResponseEntity<?> enable(@PathVariable Integer negotiationId) {
+        service.enable(negotiationId);
+        return ResponseEntity.ok(new ApiResponse("Negotiation AI has been enabled successfully"));
+    }
 }

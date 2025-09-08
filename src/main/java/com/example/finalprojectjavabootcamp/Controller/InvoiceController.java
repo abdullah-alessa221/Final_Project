@@ -4,6 +4,7 @@ import com.example.finalprojectjavabootcamp.Api.ApiException;
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.DTOOUT.CarInvoiceDTOOut;
 import com.example.finalprojectjavabootcamp.Model.Invoice;
+import com.example.finalprojectjavabootcamp.Model.Payment;
 import com.example.finalprojectjavabootcamp.Service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,10 @@ public class InvoiceController {
 
     private final FileService fileService;
 
-    @PostMapping("/generate")
-    public ResponseEntity<?> generateInvoice(@RequestBody CarInvoiceDTOOut dto) {
+    @PostMapping("/generate/{paymentId}/filepath/{path}")
+    public ResponseEntity<?> generateInvoice(@PathVariable Integer paymentId, @PathVariable String path) {
         try {
-            Invoice invoice = fileService.createInvoice(dto);
+            Invoice invoice = fileService.createInvoice(paymentId,path);
             return ResponseEntity.ok(new ApiResponse("Invoice generated successfully with ID: " + invoice.getId()));
         } catch (ApiException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

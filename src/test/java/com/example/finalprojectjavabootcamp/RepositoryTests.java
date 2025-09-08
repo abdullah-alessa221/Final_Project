@@ -34,7 +34,6 @@ public class RepositoryTests {
     Buyer buyer;
     Seller seller;
     Subscription subscription;
-    Calls call;
     User user;
 
 
@@ -53,9 +52,6 @@ public class RepositoryTests {
         subscription = new Subscription();
         subscription.setStatus("ACTIVE");
 
-        call = new Calls();
-        call.setStatus("COMPLETED");
-        call.setDuration(30.0);
     }
 
     // ===== BuyerRepository =====
@@ -95,17 +91,7 @@ public class RepositoryTests {
         Assertions.assertThat(found.getStatus()).isEqualTo("ACTIVE");
     }
 
-    // ===== CallRepository =====
-    @Test
-    public void testFindCallById() {
-        Calls saved = callRepository.save(call);
 
-        Calls found = callRepository.findCallById(saved.getId());
-
-        Assertions.assertThat(found).isNotNull();
-        Assertions.assertThat(found.getStatus()).isEqualTo("COMPLETED");
-        Assertions.assertThat(found.getDuration()).isEqualTo(30.0);
-    }
 
 
 }

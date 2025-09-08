@@ -1,15 +1,13 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
-import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Service.CallService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api/v1/call")
@@ -18,41 +16,65 @@ public class CallController {
 
     private final CallService callService;
 
-    @PostMapping("/start/{sellerId}")
-    public ResponseEntity<?> startCall(@AuthenticationPrincipal User user, @PathVariable Integer sellerId){
-        callService.startCall(user.getId(),sellerId);
-        return ResponseEntity.status(200).body(new ApiResponse("Call starting"));
-    }
 
-    @PutMapping("/end/{callId}")
-    public ResponseEntity<?> endCall(@PathVariable Integer callId) {
-        callService.endCall(callId);
-        return ResponseEntity.status(200).body(new ApiResponse("Call ended successfully"));
+    @PostMapping("/sync/{sellerId}")
+    public ResponseEntity<?> syncCallsFromApi(@PathVariable Integer sellerId) {
+            return ResponseEntity.status(200).body(callService.retrieveAndUpdateAllCalls(sellerId));
     }
 
 
     @GetMapping("/get-all")
-    public ResponseEntity<?> getAllCalls(){
+    public ResponseEntity<?> getAllCalls() {
         return ResponseEntity.status(200).body(callService.getAllCalls());
     }
 
-    //EXTRA:
 
-    @GetMapping("/duration/{callId}")
-    public ResponseEntity<?> getDuration(@PathVariable Integer callId) {
-        Double callDurating = callService.getDuration(callId);
-        return ResponseEntity.status(200).body(callDurating);
+
+    @GetMapping("/get-call-by-call-id/{id}")
+    public ResponseEntity<?> getCallById(@PathVariable String id) {
+        return ResponseEntity.status(200).body(callService.getCallById(id));
     }
 
-    @GetMapping("/get-buyer-calls")
-    public ResponseEntity<?> getAllBuyerCall(@AuthenticationPrincipal User user){
-
-        return ResponseEntity.ok(callService.getAllBuyerCall(user.getId()));
+    @GetMapping("/get-by-phone/{phoneNumber}")
+    public ResponseEntity<?> getCallsByPhoneNumber(@PathVariable String phoneNumber) {
+        return ResponseEntity.status(200).body(callService.getCallsByPhoneNumber(phoneNumber));
     }
 
-    @GetMapping("/seller-calls")
-    public ResponseEntity<?> getAllSellerCall(@AuthenticationPrincipal User user){
-        return ResponseEntity.ok(callService.getAllSellerCall(user.getId()));
+    @GetMapping("/get-by-started-at/{startedAt}")
+    public ResponseEntity<?> getCallsByStartedAt(@PathVariable String startedAt) {
+        try {
+            LocalDateTime dateTime = LocalDateTime.parse(startedAt, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            return ResponseEntity.status(200).body(callService.getCallsByStartedAt(dateTime));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(new ApiResponse("Invalid date format. Use: yyyy-MM-ddTHH:mm:ss"));
+        }
     }
 
+    @GetMapping("/get-by-status/{status}")
+    public ResponseEntity<?> getCallsByStatus(@PathVariable String status) {
+        return ResponseEntity.status(200).body(callService.getCallsByStatus(status));
     }
+
+    @GetMapping("/get-by-seller/{sellerId}")
+    public ResponseEntity<?> getCallsBySeller(@PathVariable Integer sellerId) {
+            return ResponseEntity.status(200).body(callService.getCallsBySeller(sellerId));
+    }
+    @GetMapping("/get-by-date-range")
+    public ResponseEntity<?> getCallsByDateRange(@RequestParam String startDate, @RequestParam String endDate) {
+        try {
+            LocalDateTime start = LocalDateTime.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            LocalDateTime end = LocalDateTime.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            return ResponseEntity.status(200).body(callService.getCallsByDateRange(start, end));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(new ApiResponse("Invalid date format. Use: yyyy-MM-ddTHH:mm:ss"));
+        }
+    }
+
+    @GetMapping("/get-by-seller-and-status")
+    public ResponseEntity<?> getCallsBySellerAndStatus(@RequestParam Integer sellerId, @RequestParam String status) {
+
+            return ResponseEntity.status(200).body(callService.getCallsBySellerAndStatus(sellerId,status));
+
+    }
+
+}

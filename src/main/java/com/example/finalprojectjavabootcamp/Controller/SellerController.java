@@ -38,13 +38,7 @@ public class SellerController {
     }
 
     @GetMapping("/{sellerId}/listings/filter")
-    public ResponseEntity<?> getMyListingsByFilters(
-            @PathVariable String sellerId,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false, defaultValue = "") String query,
-            @RequestParam(required = false, defaultValue = "false") Boolean getOlder
-    ) {
+    public ResponseEntity<?> getMyListingsByFilters(@PathVariable Integer sellerId, @RequestParam(required = false) String status, @RequestParam(required = false) String type, @RequestParam(required = false, defaultValue = "") String query, @RequestParam(required = false, defaultValue = "false") Boolean getOlder) {
         return ResponseEntity.ok(
                 sellerService.getMyListingsByFilters(sellerId, status, type, query, getOlder)
         );

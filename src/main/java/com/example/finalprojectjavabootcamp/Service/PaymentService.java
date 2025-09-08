@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -149,7 +148,12 @@ public class PaymentService {
                 Subscription subscription = payment.getSubscription();
                 subscription.setStatus("ACTIVE");
                 subscription.setStartDate(LocalDateTime.now());
-                subscription.setEndDate(LocalDateTime.now().plusMonths(1));
+                if (subscription.getType().equalsIgnoreCase("MONTHLY")) {
+                    subscription.setEndDate(LocalDateTime.now().plusMonths(1));
+                }
+                if (subscription.getType().equalsIgnoreCase("YEARLY")) {
+                    subscription.setEndDate(LocalDateTime.now().plusYears(1));
+                }
                 subscriptionRepository.save(subscription);
                 payment.setStatus("paid");
                 paymentRepository.save(payment);
@@ -157,13 +161,12 @@ public class PaymentService {
         }
     }
 
-    public ResponseEntity<String> processPaymentForSubscription(Integer SellerId, Integer subscriptionId, PaymentDTO paymentDTO) {
+    public ResponseEntity<String> processPaymentForSubscription(Integer subscriptionId, PaymentDTO paymentDTO) {
         Subscription subscription = subscriptionRepository.findSubscriptionById(subscriptionId);
         if (subscription == null){
             throw new ApiException("subscription not found");
         }
 
-        double amount = 59;
         String callbackUrl = "http://localhost:8080/api/v1/invoice/callback";
 
         //create the body
@@ -173,7 +176,7 @@ public class PaymentService {
                 paymentDTO.getCardCvc(),
                 paymentDTO.getCardMonth(),
                 paymentDTO.getCardYear(),
-                (int)(amount * 100),
+                (int)(subscription.getPrice() * 100),
                 "SAR",
                 callbackUrl);
 
@@ -192,7 +195,7 @@ public class PaymentService {
         String paymentId = root.path("id").asText(null);
 
 
-        Payment payment = new Payment(null,null,null,subscription,null,true,amount,"pending",paymentId,null);
+        Payment payment = new Payment(null,null,null,subscription,null,true,subscription.getPrice(),"pending",paymentId,null);
         paymentRepository.save(payment);
 
         return ResponseEntity.status(resp.getStatusCode()).body(root.toString());

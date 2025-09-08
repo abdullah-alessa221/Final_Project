@@ -56,7 +56,6 @@ public class CallService {
                 Optional<Call> existingCall = callRepository.findCallById(call.getId());
                 if (existingCall.isEmpty()) {
                     savedCalls.add(callRepository.save(call));
-                    System.out.println("Saved new call with ID: " + call.getId());
                 }
             }
 
@@ -87,7 +86,11 @@ public class CallService {
         return callRepository.findByStatus(status);
     }
 
-    public List<Call> getCallsBySeller(Seller seller) {
+    public List<Call> getCallsBySeller(Integer sellerId) {
+        Seller seller = sellerRepository.findSellerById(sellerId);
+        if (seller == null) {
+            throw new ApiException("Seller not found");
+        }
         return callRepository.findBySeller(seller);
     }
 
@@ -95,7 +98,11 @@ public class CallService {
         return callRepository.findByStartedAtBetween(startDate, endDate);
     }
 
-    public List<Call> getCallsBySellerAndStatus(Seller seller, String status) {
+    public List<Call> getCallsBySellerAndStatus(Integer sellerId, String status) {
+        Seller seller = sellerRepository.findSellerById(sellerId);
+        if (seller == null) {
+            throw new ApiException("Seller not found");
+        }
         return callRepository.findBySellerAndStatus(seller, status);
     }
 
@@ -182,6 +189,7 @@ public class CallService {
             // Extract and parse endedAt
             if (callNode.has("endedAt")) {
                 LocalDateTime endedAt = parseDateTime(callNode.get("endedAt").asText());
+                call.setEndedAt(endedAt);
             }
 
             // Extract status
@@ -194,7 +202,6 @@ public class CallService {
             return call;
 
         } catch (Exception e) {
-            System.err.println("Error mapping JSON to Call object: " + e.getMessage());
             return null;
         }
     }
@@ -230,7 +237,6 @@ public class CallService {
                     // Try custom format if needed
                     return LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
                 } catch (DateTimeParseException e3) {
-                    System.err.println("Unable to parse date: " + dateTimeString);
                     return LocalDateTime.now(); // Default to current time
                 }
             }

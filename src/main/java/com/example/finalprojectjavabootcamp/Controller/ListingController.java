@@ -1,10 +1,12 @@
 package com.example.finalprojectjavabootcamp.Controller;
 
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
+import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Service.ListingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +23,9 @@ public class ListingController {
         return ResponseEntity.status(HttpStatus.OK).body(listingService.getAllListings());
     }
 
-    @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<?> getListingsBySeller(@PathVariable Integer sellerId) {
-        return ResponseEntity.status(HttpStatus.OK).body(listingService.getListingBySellerId(sellerId));
+    @GetMapping("/seller")
+    public ResponseEntity<?> getListingsBySeller(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(HttpStatus.OK).body(listingService.getListingBySellerId(user.getId()));
     }
 
     @GetMapping("/status/{status}")

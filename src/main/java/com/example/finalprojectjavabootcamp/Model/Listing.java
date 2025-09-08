@@ -11,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -43,7 +44,8 @@ import java.time.LocalDateTime;
     @JsonIgnore
     private Seller seller;
 
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "listing")
+    private Set<Negotiation> negotiation;
 
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "listing")

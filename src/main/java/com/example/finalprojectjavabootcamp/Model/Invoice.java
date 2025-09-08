@@ -1,13 +1,13 @@
 package com.example.finalprojectjavabootcamp.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,17 +20,19 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String buyerName;
-
-    private String buyerPhone;
-
-    private String sellerName;
-
-    private String sellerPhone;
-
-    private Double price;
-
-    private String date;
-
+    @Column(columnDefinition = "varchar(255)")
     private String filePath;
+
+
+
+    @ManyToOne
+    private Buyer buyer;
+
+    @ManyToOne
+    private Seller seller;
+
+
+    @CreationTimestamp
+    @Column(columnDefinition = "timestamp")
+    private LocalDateTime created_at;
 }

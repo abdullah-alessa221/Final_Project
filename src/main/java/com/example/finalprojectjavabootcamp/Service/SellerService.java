@@ -2,7 +2,7 @@ package com.example.finalprojectjavabootcamp.Service;
 
 import com.example.finalprojectjavabootcamp.Api.ApiException;
 import com.example.finalprojectjavabootcamp.DTOIN.SellerDTOIn;
-import com.example.finalprojectjavabootcamp.DTOOut.MyListingStatsDTOOut;
+import com.example.finalprojectjavabootcamp.DTOOUT.MyListingStatsDTOOut;
 import com.example.finalprojectjavabootcamp.Model.Listing;
 import com.example.finalprojectjavabootcamp.Model.Negotiation;
 import com.example.finalprojectjavabootcamp.Model.Seller;
@@ -101,8 +101,8 @@ public class SellerService {
 
     }
 
-    public List<Listing> getMyListingsByFilters(String sellerId, String status, String type, String query, Boolean getOlder){
-        Seller seller = sellerRepository.findSellerById(Integer.parseInt(sellerId));
+    public List<Listing> getMyListingsByFilters(Integer sellerId, String status, String type, String query, Boolean getOlder){
+        Seller seller = sellerRepository.findSellerById(sellerId);
         if (seller == null){
             throw new ApiException("Seller not found");
         }

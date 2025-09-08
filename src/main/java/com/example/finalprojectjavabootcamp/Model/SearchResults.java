@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -15,28 +14,17 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Subscription {
+public class SearchResults {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String type;
-
-    private Double price;
-
-    private LocalDateTime startDate;
-
-    private LocalDateTime endDate;
-
-    private String status;
-
-    private Integer remainingDays;
-
     @OneToOne
-    @JsonIgnore
-    private Seller seller;
+    private Listing listing;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subscription")
-    private Set<Payment> payments;
+    @ManyToOne
+    @JsonIgnore
+    private Search search;
 
 }

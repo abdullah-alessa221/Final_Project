@@ -47,6 +47,28 @@ public class NegotiationService {
         negotiationRepository.save(n);
     }
 
+
+    public void enable(Integer negotiationId) {
+        if (negotiationId == null) throw new ApiException("negotiationId is required");
+
+        Negotiation n = negotiationRepository.findNegotiationById(negotiationId);
+        if (n == null) throw new ApiException("Negotiation not found: " + negotiationId);
+
+        n.setMode("ai-assisted");
+        negotiationRepository.save(n);
+    }
+
+    public void disable(Integer negotiationId) {
+        if (negotiationId == null) throw new ApiException("negotiationId is required");
+
+        Negotiation n = negotiationRepository.findNegotiationById(negotiationId);
+        if (n == null) throw new ApiException("Negotiation not found: " + negotiationId);
+
+        n.setMode("manual");
+        negotiationRepository.save(n);
+    }
+
+
     public void createAi(Integer listingId, Integer buyerId, AiDTOIn aiDTOIn) {
 
         Listing listingRef = listingRepository.getListingById(listingId);

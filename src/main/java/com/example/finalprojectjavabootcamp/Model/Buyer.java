@@ -28,4 +28,8 @@ public class Buyer {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
     private Set<Rating> ratings;
+
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
+    private Set<Search> searches;
 }

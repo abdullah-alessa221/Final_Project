@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -18,17 +19,23 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Check(constraints = "status IN ('waiting_offer','waiting_acceptance','accepted','rejected') AND mode IN ('manual','ai-assisted')")
+@Check(constraints = "LOWER(status) IN ('waiting_offer','waiting_acceptance','accepted','rejected') AND mode IN ('manual','ai-assisted')")
 public class Negotiation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
+    @ManyToOne
+    @JsonIgnore
     private Listing listing;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "negotiation")
+    @PrimaryKeyJoinColumn
+    private Payment payment;
+
+    @ManyToOne
+    @JsonIgnore
     private Buyer buyer;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "negotiation")

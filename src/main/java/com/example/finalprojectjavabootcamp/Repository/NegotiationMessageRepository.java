@@ -10,12 +10,7 @@ import java.util.List;
 @Repository
 public interface NegotiationMessageRepository extends JpaRepository<NegotiationMessage, Integer> {
 
-    NegotiationMessage findNegotiationMessageById(Integer id);
 
     List<NegotiationMessage> findAllByNegotiation_IdOrderByCreatedAtAsc(Integer negotiationId);
-
-    // Last message (descending 1st)
-    NegotiationMessage findFirstByNegotiation_IdOrderByCreatedAtDesc(Integer negotiationId);
-
 
 }

@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Check;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,6 +30,9 @@ public class Negotiation {
 
     @OneToOne
     private Buyer buyer;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "negotiation")
+    private Set<NegotiationMessage> negotiationMessage;
 
     @Size(max = 1000)
     @Column(length = 1000, columnDefinition = "varchar(1000)")

@@ -17,8 +17,8 @@ public class InvoiceController {
 
     private final FileService fileService;
 
-    @PostMapping("/generate/{paymentId}/filepath/{path}")
-    public ResponseEntity<?> generateInvoice(@PathVariable Integer paymentId, @PathVariable String path) {
+    @PostMapping("/generate/{paymentId}")
+    public ResponseEntity<?> generateInvoice(@PathVariable Integer paymentId, @RequestParam String path) {
         try {
             Invoice invoice = fileService.createInvoice(paymentId,path);
             return ResponseEntity.ok(new ApiResponse("Invoice generated successfully with ID: " + invoice.getId()));

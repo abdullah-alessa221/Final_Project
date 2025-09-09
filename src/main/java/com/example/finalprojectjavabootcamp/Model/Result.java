@@ -7,14 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class SearchResults {
+public class Result {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

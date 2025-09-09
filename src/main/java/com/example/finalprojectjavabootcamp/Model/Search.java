@@ -33,5 +33,5 @@ public class Search {
     private Buyer buyer;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "search")
-    private Set<SearchResults> searchResults;
+    private Set<Result> results;
 }

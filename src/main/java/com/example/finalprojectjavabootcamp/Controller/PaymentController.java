@@ -35,9 +35,9 @@ public class PaymentController {
             return paymentService.processPayment(negotiationId, paymentDTO);
     }
 
-    @PostMapping("/process-subscription-payment/{sellerId}/{subscriptionId}")
-    public ResponseEntity<?> processPaymentForSubscription(@PathVariable Integer sellerId, @PathVariable Integer subscriptionId, @RequestBody PaymentDTO paymentDTO) {
-            return paymentService.processPaymentForSubscription(sellerId, subscriptionId, paymentDTO);
+    @PostMapping("/process-subscription-payment/{subscriptionId}")
+    public ResponseEntity<?> processPaymentForSubscription( @PathVariable Integer subscriptionId, @RequestBody PaymentDTO paymentDTO) {
+            return paymentService.processPaymentForSubscription( subscriptionId, paymentDTO);
 
     }
 

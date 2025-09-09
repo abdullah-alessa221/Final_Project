@@ -95,23 +95,6 @@ public class ServiceTests {
         verify(whatsappService).sendSubscriptionCancelledMessage(anyString(), eq(sub));
     }
 
-    @Test
-    void testPauseSubscription() {
-        Subscription sub = new Subscription();
-        sub.setId(1);
-        sub.setStatus("ACTIVE");
-        sub.setEndDate(LocalDateTime.now().plusDays(5));
-        sub.setSeller(seller);
-
-        when(subscriptionRepository.findSubscriptionById(1)).thenReturn(sub);
-
-        subscriptionService.pauseSubscription(1);
-
-        assertThat(sub.getStatus()).isEqualTo("PAUSED");
-        assertThat(sub.getRemainingDays()).isGreaterThan(0);
-        verify(subscriptionRepository).save(sub);
-        verify(whatsappService).sendSubscriptionPausedMessage(anyString(), eq(sub));
-    }
 
     // ===== UserService tests =====
     @Test

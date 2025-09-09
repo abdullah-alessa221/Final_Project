@@ -182,7 +182,6 @@ public class NegotiationService {
         if (n == null) throw new ApiException("Negotiation not found: " + negotiationId);
 
         if (n.getBuyer() == null) throw new ApiException("Negotiation has no buyer");
-        if (!buyerId.equals(n.getBuyer().getId())) throw new ApiException("buyerId must match the negotiation buyer id");
 
         String st = n.getStatus();
         if (st == null) st = "waiting_offer";

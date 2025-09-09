@@ -1,5 +1,6 @@
 package com.example.finalprojectjavabootcamp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -26,6 +27,7 @@ public class NegotiationMessage {
     private Integer id;
 
     @ManyToOne
+    @JsonIgnore
     private Negotiation negotiation;
 
     @Pattern(regexp = "^(buyer|seller|ai)$", message = "senderType must be buyer, seller, or ai")

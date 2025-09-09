@@ -33,10 +33,10 @@ public class CallLog {
     @Positive(message = "Cost must be positive")
     private Double cost;
 
-    @NotEmpty(message = "Start time cannot be empty")
+    @NotNull(message = "End date is required")
     private LocalDateTime startedAt;
 
-    @NotEmpty(message = "End time cannot be empty")
+    @NotNull(message = "End date is required")
     private LocalDateTime endedAt;
 
     @NotEmpty(message = "Status cannot be empty")

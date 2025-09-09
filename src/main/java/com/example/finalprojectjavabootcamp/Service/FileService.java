@@ -50,11 +50,14 @@ public class FileService {
         JSONObject jsonDataForMerge;
 
         Payment payment = paymentRepository.findPaymentById(paymentId);
-        InvoiceDTO invoiceDTO = new InvoiceDTO(payment.getPaymentId(),null,null,
+        InvoiceDTO invoiceDTO = new InvoiceDTO(
+                payment.getId(),  // رقم الفاتورة
                 payment.getNegotiation().getBuyer().getUser().getName(),
                 payment.getNegotiation().getBuyer().getUser().getPhone(),
                 payment.getNegotiation().getListing().getSeller().getUser().getName(),
                 payment.getNegotiation().getListing().getSeller().getUser().getPhone(),
+                payment.getNegotiation().getListing().getCarListing().getModel(), // السيارة
+                String.valueOf(payment.getNegotiation().getListing().getCarListing().getYear()), // سنة الصنع
                 payment.getTotalAmount(),
                 payment.getCreated_at().toString(),
                 filePath

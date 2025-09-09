@@ -16,7 +16,6 @@ public class RealEstateDTOIn {
     private String description;
     @NotEmpty(message = "Real estate type is required")
     private String type;
-    @Pattern(regexp = "(?i)^(Apartment|Villa|Townhouse|Duplex|Studio|Penthouse|Store|Farm|Land|Other)$", message = "Real estate type must be Apartment, Villa, Townhouse, Duplex, Studio, Penthouse, Store, Farm, Land or Other")
     @NotNull(message = "specifying if the real estate is a renal or not is required")
     private Boolean isRental;
     @Positive(message = "Rooms must be positive")

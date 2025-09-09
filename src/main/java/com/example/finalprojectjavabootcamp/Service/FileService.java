@@ -50,7 +50,7 @@ public class FileService {
         JSONObject jsonDataForMerge;
 
         Payment payment = paymentRepository.findPaymentById(paymentId);
-        InvoiceDTO invoiceDTO = new InvoiceDTO(
+        InvoiceDTO invoiceDTO = new InvoiceDTO(payment.getPaymentId(),null,null,
                 payment.getNegotiation().getBuyer().getUser().getName(),
                 payment.getNegotiation().getBuyer().getUser().getPhone(),
                 payment.getNegotiation().getListing().getSeller().getUser().getName(),
@@ -60,6 +60,13 @@ public class FileService {
                 filePath
         );
 
+        if (payment.getNegotiation().getListing().getType().equals("car")) {
+            invoiceDTO.setCarModel(payment.getNegotiation().getListing().getCarListing().getCar_type());
+            invoiceDTO.setCarYear(payment.getNegotiation().getListing().getCarListing().getYear() + "");
+        }
+        if (payment.getNegotiation().getListing().getType().equals("real_estate")) {
+
+        }
 
         try {
             inputStream = new File("src/main/resources/Templates/invoice.docx")

@@ -33,7 +33,7 @@ public class Seller {
     private Subscription subscription;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
-    private Set<Call> calls;
+    private Set<CallLog> calls;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "seller")
     private Set<Listing> listings;

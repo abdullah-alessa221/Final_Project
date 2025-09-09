@@ -35,8 +35,10 @@ public class Payment {
     private Rating rating;
 
     @ManyToOne
+    @JoinColumn
     @JsonIgnore
     private Subscription subscription;
+
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "payment" )
     @PrimaryKeyJoinColumn

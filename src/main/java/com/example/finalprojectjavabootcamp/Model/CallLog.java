@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Call {
+public class CallLog {
+
     @Id
     private String id;
 

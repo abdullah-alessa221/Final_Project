@@ -124,7 +124,12 @@ public class PaymentService {
         String paymentId = root.path("id").asText(null);
 
 
-        Payment payment = new Payment(null,negotiation,null,null,null,false,negotiation.getAgreedPrice(),"pending",paymentId,null);
+        Payment payment = new Payment();
+        payment.setNegotiation(negotiation);
+        payment.setIsSubscription(false);
+        payment.setTotalAmount(negotiation.getAgreedPrice());
+        payment.setStatus("pending");
+        payment.setPaymentId(paymentId);
         paymentRepository.save(payment);
 
         return ResponseEntity.status(response.getStatusCode()).body(response.getBody().toString());
@@ -195,7 +200,12 @@ public class PaymentService {
         String paymentId = root.path("id").asText(null);
 
 
-        Payment payment = new Payment(null,null,null,subscription,null,true,subscription.getPrice(),"pending",paymentId,null);
+        Payment payment = new Payment();
+        payment.setSubscription(subscription);
+        payment.setIsSubscription(true);
+        payment.setTotalAmount(subscription.getPrice());
+        payment.setStatus("pending");
+        payment.setPaymentId(paymentId);
         paymentRepository.save(payment);
 
         return ResponseEntity.status(resp.getStatusCode()).body(root.toString());

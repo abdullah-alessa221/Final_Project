@@ -41,18 +41,27 @@ public class PaymentController {
 
     }
 
-    @PostMapping("/callback")
-    public ResponseEntity<?> handlePaymentCallback(
-            @RequestParam String id,
-            @RequestParam String status,
-            @RequestParam String amount,
-            @RequestParam(required = false) String message) {
-        try {
-            paymentService.handlePaymentCallback(id, status, amount, message);
-            return ResponseEntity.status(200).body(new ApiResponse("Payment callback processed successfully"));
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(new ApiResponse("Callback processing failed: " + e.getMessage()));
-        }
-    }
+//    @PostMapping("/callback")
+//    public ResponseEntity<?> handlePaymentCallback(
+//            @RequestParam String id,
+//            @RequestParam String status,
+//            @RequestParam String amount,
+//            @RequestParam String message) {
+//        try {
+//            paymentService.handlePaymentCallback(id, status, amount, message);
+//            return ResponseEntity.status(200).body(new ApiResponse("Payment callback processed successfully"));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(400).body(new ApiResponse("Callback processing failed: " + e.getMessage()));
+//       }
+//    }
+
+@GetMapping("/callback")
+public ResponseEntity<?> handlePaymentCallback(@RequestParam String id,
+                                               @RequestParam String status,
+                                               @RequestParam(required = false) String amount,
+                                               @RequestParam(required = false) String message) {
+    paymentService.handlePaymentCallback(id, status);
+    return ResponseEntity.status(200).body(new ApiResponse("Payment status("+status+")"));
+}
 
 }

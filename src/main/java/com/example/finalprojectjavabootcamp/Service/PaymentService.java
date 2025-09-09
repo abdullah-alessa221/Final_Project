@@ -27,7 +27,7 @@ public class PaymentService {
     private final NegotiationRepository negotiationRepository;
     private final SubscriptionRepository subscriptionRepository;
 
-    @Value("${moyasar.api.key}")
+    @Value("sk_test_DfkFZiPp7sePd7EyfPW9KnWzYYVX16gQaT7gz2tS")
     private String apiKey;
 
     private static final String MOYASAR_API_URL = "https://api.moyasar.com/v1/payments";
@@ -86,7 +86,7 @@ public class PaymentService {
             throw new ApiException("cannot continue payment, negotiation status: "+negotiation.getStatus());
         }
 
-        String callbackUrl = "http://localhost:8080/api/v1/invoice/callback";
+        String callbackUrl = "http://localhost:8080/api/v1/payment/callback";
 
 
         //create the body
@@ -99,7 +99,6 @@ public class PaymentService {
                 (int) (negotiation.getAgreedPrice() * 100),
                 "SAR",
                 callbackUrl);
-
 
         //set headers
         HttpHeaders headers = new HttpHeaders();
@@ -137,13 +136,13 @@ public class PaymentService {
 
 
 
-    public void handlePaymentCallback(String id, String status, String amount, String message) {
+    public void handlePaymentCallback(String id, String status) {
         Payment payment = paymentRepository.findPaymentByPaymentId(id);
         if (payment == null) {
             throw new ApiException("Payment not found");
         }
 
-        if (payment.getIsSubscription()) {
+        if (!payment.getIsSubscription()) {
             if (status.equalsIgnoreCase("paid")) {
                 payment.setStatus("paid");
                 paymentRepository.save(payment);
@@ -172,10 +171,11 @@ public class PaymentService {
             throw new ApiException("subscription not found");
         }
 
-        String callbackUrl = "http://localhost:8080/api/v1/invoice/callback";
-
+        String callbackUrl = "http://localhost:8080/api/v1/payment/callback";
         //create the body
-        String requestBody =String.format("source[type]=card&source[name]=%s&source[number]=%s&source[cvc]=%s&source[month]=%s&source[year]=%s&amount=%d&currency=%s&callback_url=%s",
+        String requestBody =String.format("source[type]=card&source[name]=%s&source[number]=%s&source[cvc]=%s&" +
+                        "source[month]=%s&source[year]=%s&amount=%d&currency=%s&" +
+                        "callback_url=%s",
                 paymentDTO.getCardName(),
                 paymentDTO.getCardNumber(),
                 paymentDTO.getCardCvc(),

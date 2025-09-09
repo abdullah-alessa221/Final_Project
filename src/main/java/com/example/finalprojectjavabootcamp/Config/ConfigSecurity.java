@@ -50,12 +50,12 @@ public class ConfigSecurity {
                 .requestMatchers("/api/v1/buyer/update/**", "/api/v1/buyer/filter").hasAuthority("BUYER")
 
                 // Seller
-                .requestMatchers("/api/v1/seller/update/**", "/api/v1/seller/**/listings/filter",
-                        "/api/v1/seller/**/negotiations/stats").hasAuthority("SELLER")
+                .requestMatchers("/api/v1/seller/update/**", "/api/v1/seller/listings/filter",
+                        "/api/v1/seller/negotiations/stats").hasAuthority("SELLER")
 
                 // Negotiations
-                .requestMatchers("/api/v1/negotiations/**", "/api/v1/ai-negotiations/**",
-                        "/api/v1/negotiation-message/**", "/api/v1/meeting/**").hasAnyAuthority("SELLER","BUYER")
+                .requestMatchers("/api/v1/negotiations/**",
+                        "/api/v1/negotiation-message/**").hasAnyAuthority("SELLER","BUYER")
 
                 // Calls
                 .requestMatchers("/api/v1/call/**").hasAnyAuthority("SELLER","BUYER")
@@ -71,7 +71,7 @@ public class ConfigSecurity {
                 .requestMatchers("/api/v1/invoice/**").hasAnyAuthority("SELLER", "ADMIN","BUYER")
 
                 // Payment
-                .requestMatchers("/api/v1/payment/**").hasAnyAuthority("SELLER","BUYER")
+//                .requestMatchers("/api/v1/payment/**").hasAnyAuthority("SELLER","BUYER")
 
                 // Rating
                 .requestMatchers("/api/v1/rating/**").hasAnyAuthority("SELLER","BUYER")

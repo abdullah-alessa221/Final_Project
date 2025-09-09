@@ -19,14 +19,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Check(constraints = "status IN ('pending','confirmed','failed','cancelled')")
 public class Payment {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne
-    @MapsId
     @JsonIgnore
     private Negotiation negotiation;
 

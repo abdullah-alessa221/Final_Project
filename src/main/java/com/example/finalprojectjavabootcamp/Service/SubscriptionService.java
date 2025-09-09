@@ -78,6 +78,12 @@ public class SubscriptionService {
         return subscriptionRepository.findAll();
     }
 
+    public void setPhoneNumber(Integer subscriptionId, String phoneNumberId){
+        Subscription subscription = subscriptionRepository.findSubscriptionById(subscriptionId);
+        if (subscription == null) throw new ApiException("Subscription not found");
+        subscription.setPhoneNumberId(phoneNumberId);
+    }
+
     public Subscription getSubscriptionById(Integer id){
         return subscriptionRepository.findSubscriptionById(id);
     }

@@ -31,6 +31,11 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionService.getSubscriptionById(id));
     }
 
+    @PutMapping("/set-phone-id/{subscriptionId}/{phoneId}")
+    public ResponseEntity<?> setPhoneId(@PathVariable Integer subscriptionId, @PathVariable String phoneId){
+        subscriptionService.setPhoneNumber(subscriptionId, phoneId);
+        return ResponseEntity.ok(new ApiResponse("Phone number set successfully."));
+    }
 
     //EXTRA:
     @PostMapping("/monthly")

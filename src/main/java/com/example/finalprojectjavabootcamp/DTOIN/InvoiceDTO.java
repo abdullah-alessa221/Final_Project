@@ -9,6 +9,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class InvoiceDTO {
 
+    private String id;
+    private String carModel;
+    private String carYear;
     private String buyerName;
     private String buyerPhone;
     private String sellerName;

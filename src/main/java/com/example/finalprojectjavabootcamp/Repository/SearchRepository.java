@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SearchRepository extends JpaRepository<Search, Integer> {
 
+    Search findSearchById(Integer id);
 }

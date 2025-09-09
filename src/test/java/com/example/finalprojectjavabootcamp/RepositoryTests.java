@@ -82,7 +82,7 @@ public class RepositoryTests {
     public void testFindSellerByIdAndUser() {
         Seller saved = sellerRepository.save(seller);
 
-        Seller byId = sellerRepository.findSellerById(saved.getId());
+        Seller byId =   sellerRepository.findSellerById(saved.getId());
         Seller byUser = sellerRepository.findSellerByUser(user);
 
         Assertions.assertThat(byId).isNotNull();

@@ -1,17 +1,18 @@
 
 package com.example.finalprojectjavabootcamp.Service;
 
+import com.example.finalprojectjavabootcamp.Api.ApiException;
 import com.example.finalprojectjavabootcamp.DTOIN.AiDTOIn;
 import com.example.finalprojectjavabootcamp.DTOIN.SearchCarDTOIn;
 import com.example.finalprojectjavabootcamp.DTOIN.SearchRealEstateDTOIn;
-import com.example.finalprojectjavabootcamp.Model.CarListing;
-import com.example.finalprojectjavabootcamp.Model.RealEstateListing;
-import com.example.finalprojectjavabootcamp.Repository.CarListingRepository;
-import com.example.finalprojectjavabootcamp.Repository.RealEstateListingRepository;
-import com.example.finalprojectjavabootcamp.Repository.SearchRepository;
+import com.example.finalprojectjavabootcamp.Model.*;
+
+
+import com.example.finalprojectjavabootcamp.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,11 +20,18 @@ import java.util.List;
 public class SearchService {
 
     private final SearchRepository searchRepository;
+    private final ResultRepository resultRepository;
     private final CarListingRepository carListingRepository;
     private final RealEstateListingRepository realEstateListingRepository;
+    private final BuyerRepository buyerRepository;
+    private final ListingRepository listingRepository;
     private final NegotiationService negotiationService;
 
     public void CreateCarSearch(SearchCarDTOIn searchCarDTOIn, Integer buyerId) {
+        Buyer buyer = buyerRepository.findBuyersById(buyerId);
+        if (buyer == null) {
+            throw new ApiException("Buyer not found");
+        }
         List<CarListing> listings = carListingRepository.findAll();
 
         if (searchCarDTOIn.getColor() != null) {
@@ -53,15 +61,27 @@ public class SearchService {
         if (searchCarDTOIn.getCity() != null) {
             listings.retainAll(carListingRepository.findCarListingsByCity(searchCarDTOIn.getCity()));
         }
-        if (searchCarDTOIn.getAutoNegotiation()){
-            for (CarListing listing : listings) {
+
+        Search search = new Search(null,"car",searchCarDTOIn.getMake()+ " " + searchCarDTOIn.getModel()+ " " + searchCarDTOIn.getYear(),searchCarDTOIn.getAutoNegotiation(),buyer,null);
+
+        for (CarListing listing : listings) {
+                if (searchCarDTOIn.getAutoNegotiation()){
                 negotiationService.createAi(listing.getId(),buyerId,new AiDTOIn(searchCarDTOIn.getPrice(),searchCarDTOIn.getNotes()));
-            }
+                }
+                Result result = new Result(null,listing.getId(),search);
+                resultRepository.save(result);
         }
 
+        searchRepository.save(search);
     }
 
     public void CreateRealEstateSearch(SearchRealEstateDTOIn searchRealEstateDTOIn, Integer buyerId) {
+
+        Buyer buyer = buyerRepository.findBuyersById(buyerId);
+        if (buyer == null) {
+            throw new ApiException("Buyer not found");
+        }
+
         List<RealEstateListing> listings = realEstateListingRepository.findAll();
 
         if (searchRealEstateDTOIn.getType() != null) {
@@ -88,11 +108,37 @@ public class SearchService {
             listings.retainAll(realEstateListingRepository.findRealEstateListingsByNeighborhood(searchRealEstateDTOIn.getNeighborhood()));
         }
 
-        if (searchRealEstateDTOIn.getAutoNegotiation()) {
-            for (RealEstateListing listing : listings) {
-                negotiationService.createAi(listing.getId(), buyerId, new AiDTOIn(searchRealEstateDTOIn.getPrice(), searchRealEstateDTOIn.getNotes()));
+        Search search = new Search(null, "real_estate",
+                searchRealEstateDTOIn.getType() + " " +
+                searchRealEstateDTOIn.getNeighborhood() + " " +
+                searchRealEstateDTOIn.getRooms() + "rooms",
+                searchRealEstateDTOIn.getAutoNegotiation(),
+                buyer,
+                null);
+        searchRepository.save(search);
+
+        for (RealEstateListing listing : listings) {
+            if (searchRealEstateDTOIn.getAutoNegotiation()) {
+                negotiationService.createAi(listing.getId(), buyerId,
+                        new AiDTOIn(searchRealEstateDTOIn.getPrice(), searchRealEstateDTOIn.getNotes()));
             }
+            Result result = new Result(null, listing.getId(), search);
+            resultRepository.save(result);
         }
+        searchRepository.save(search);
+    }
+
+    public List<Listing> getSearchResultsById(Integer SearchId){
+        Search search = searchRepository.findSearchById(SearchId);
+        if (search == null){
+            throw new ApiException("Search not found");
+        }
+        List<Result> results = resultRepository.findResultsBySearch(search);
+        ArrayList<Listing> listings = new ArrayList<>();
+        for (Result result : results){
+            listings.add(listingRepository.getListingById(result.getListingId()));
+        }
+        return listings;
     }
 
 }

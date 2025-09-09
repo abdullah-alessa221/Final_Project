@@ -80,7 +80,7 @@ private Seller seller;
 
     @Override
     public String getUsername() {
-        return "";
+        return email;
     }
 
     @Override

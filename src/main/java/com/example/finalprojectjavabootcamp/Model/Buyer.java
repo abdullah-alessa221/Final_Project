@@ -24,9 +24,14 @@ public class Buyer {
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
+    @JsonIgnore
     private Set<Rating> ratings;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
+    @JsonIgnore
+    private Set<Search> searches;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer")
-    private Set<Search> searches;
+    @JsonIgnore
+    private Set<Negotiation> negotiations;
 }

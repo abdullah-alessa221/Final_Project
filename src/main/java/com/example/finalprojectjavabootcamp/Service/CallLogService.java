@@ -1,11 +1,11 @@
 package com.example.finalprojectjavabootcamp.Service;
 
-import com.example.finalprojectjavabootcamp.Repository.CallRepository;
+import com.example.finalprojectjavabootcamp.Repository.CallLogRepository;
 import com.example.finalprojectjavabootcamp.Repository.SellerRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.finalprojectjavabootcamp.Api.ApiException;
-import com.example.finalprojectjavabootcamp.Model.Call;
+import com.example.finalprojectjavabootcamp.Model.CallLog;
 import com.example.finalprojectjavabootcamp.Model.Seller;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
@@ -22,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
-public class CallService {
+public class CallLogService {
     @Value("${VAPI_KEY}")
     private String vapiKey;
 
-    private final CallRepository callRepository;
+    private final CallLogRepository callRepository;
     private final SellerRepository sellerRepository;
 
     private final OkHttpClient client = new OkHttpClient.Builder()
@@ -38,7 +38,7 @@ public class CallService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    public List<Call> retrieveAndUpdateAllCalls(Integer sellerId) throws ApiException {
+    public List<CallLog> retrieveAndUpdateAllCallLogs(Integer sellerId) throws ApiException {
         Seller seller = sellerRepository.findSellerById(sellerId);
         if (seller == null) {
             throw new ApiException("Seller not found");
@@ -48,45 +48,45 @@ public class CallService {
         }
 
         try {
-            List<Call> fetchedCalls = fetchCallsFromApi(seller.getSubscription().getPhoneNumberId());
+            List<CallLog> fetchedCallLogs = fetchCallLogsFromApi(seller.getSubscription().getPhoneNumberId());
 
-            List<Call> savedCalls = new ArrayList<>();
-            for (Call call : fetchedCalls) {
+            List<CallLog> savedCallLogs = new ArrayList<>();
+            for (CallLog call : fetchedCallLogs) {
                 call.setSeller(seller);
-                Optional<Call> existingCall = callRepository.findCallById(call.getId());
-                if (existingCall.isEmpty()) {
-                    savedCalls.add(callRepository.save(call));
+                Optional<CallLog> existingCallLog = callRepository.findCallLogById(call.getId());
+                if (existingCallLog.isEmpty()) {
+                    savedCallLogs.add(callRepository.save(call));
                 }
             }
 
-            return savedCalls;
+            return savedCallLogs;
 
         } catch (Exception e) {
             throw new ApiException("Error retrieving and updating calls: " + e.getMessage());
         }
     }
 
-    public List<Call> getAllCalls() {
+    public List<CallLog> getAllCallLogs() {
         return callRepository.findAll();
     }
 
-    public Optional<Call> getCallById(String id) {
-        return callRepository.findCallById(id);
+    public Optional<CallLog> getCallLogById(String id) {
+        return callRepository.findCallLogById(id);
     }
 
-    public List<Call> getCallsByPhoneNumber(String phoneNumber) {
+    public List<CallLog> getCallLogsByPhoneNumber(String phoneNumber) {
         return callRepository.findByCustomerNumber(phoneNumber);
     }
 
-    public List<Call> getCallsByStartedAt(LocalDateTime startedAt) {
+    public List<CallLog> getCallLogsByStartedAt(LocalDateTime startedAt) {
         return callRepository.findByStartedAt(startedAt);
     }
 
-    public List<Call> getCallsByStatus(String status) {
+    public List<CallLog> getCallLogsByStatus(String status) {
         return callRepository.findByStatus(status);
     }
 
-    public List<Call> getCallsBySeller(Integer sellerId) {
+    public List<CallLog> getCallLogsBySeller(Integer sellerId) {
         Seller seller = sellerRepository.findSellerById(sellerId);
         if (seller == null) {
             throw new ApiException("Seller not found");
@@ -94,11 +94,11 @@ public class CallService {
         return callRepository.findBySeller(seller);
     }
 
-    public List<Call> getCallsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+    public List<CallLog> getCallLogsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         return callRepository.findByStartedAtBetween(startDate, endDate);
     }
 
-    public List<Call> getCallsBySellerAndStatus(Integer sellerId, String status) {
+    public List<CallLog> getCallLogsBySellerAndStatus(Integer sellerId, String status) {
         Seller seller = sellerRepository.findSellerById(sellerId);
         if (seller == null) {
             throw new ApiException("Seller not found");
@@ -106,7 +106,7 @@ public class CallService {
         return callRepository.findBySellerAndStatus(seller, status);
     }
 
-    private List<Call> fetchCallsFromApi(String phoneNumberId) throws ApiException {
+    private List<CallLog> fetchCallLogsFromApi(String phoneNumberId) throws ApiException {
         try {
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://api.vapi.ai/call").newBuilder();
             if (phoneNumberId != null && !phoneNumberId.isEmpty()) {
@@ -130,17 +130,17 @@ public class CallService {
             String responseBody = response.body().string();
             JsonNode rootNode = objectMapper.readTree(responseBody);
 
-            List<Call> callList = new ArrayList<>();
+            List<CallLog> callList = new ArrayList<>();
 
             if (rootNode.isArray()) {
                 for (JsonNode callNode : rootNode) {
-                    Call call = mapJsonToCall(callNode);
+                    CallLog call = mapJsonToCallLog(callNode);
                     if (call != null) {
                         callList.add(call);
                     }
                 }
             } else {
-                Call call = mapJsonToCall(rootNode);
+                CallLog call = mapJsonToCallLog(rootNode);
                 if (call != null) {
                     callList.add(call);
                 }
@@ -153,9 +153,9 @@ public class CallService {
         }
     }
 
-    private Call mapJsonToCall(JsonNode callNode) {
+    private CallLog mapJsonToCallLog(JsonNode callNode) {
         try {
-            Call call = new Call();
+            CallLog call = new CallLog();
 
             // Extract id
             if (callNode.has("id")) {

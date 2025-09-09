@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Check;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -60,7 +61,8 @@ public class Negotiation {
     @Column( columnDefinition = "decimal(19,2)")
     private Double agreedPrice;
 
-    @Column(nullable = false, columnDefinition = "timestamp")
+    @CreationTimestamp
+    @Column(columnDefinition = "timestamp")
     private LocalDateTime startedAt;
 
     @Column(columnDefinition = "timestamp")

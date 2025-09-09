@@ -19,8 +19,8 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
-    private Listing listing;
+
+    private Integer listingId;
 
     @ManyToOne
     @JsonIgnore

@@ -26,4 +26,10 @@ public class SearchController {
         searchService.CreateRealEstateSearch(searchRealEstateDTOIn, buyerId);
         return ResponseEntity.status(200).body(new ApiResponse("Real estate search created successfully"));
     }
+
+    @GetMapping("/get-results/{searchId}")
+    public ResponseEntity<?> getSearchResults(@PathVariable Integer searchId) {
+        return ResponseEntity.ok(searchService.getSearchResultsById(searchId));
+    }
+
 }

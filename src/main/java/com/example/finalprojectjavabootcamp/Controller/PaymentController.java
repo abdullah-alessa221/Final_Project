@@ -36,8 +36,8 @@ public class PaymentController {
     }
 
     @PostMapping("/process-subscription-payment/{subscriptionId}")
-    public ResponseEntity<?> processPaymentForSubscription(@PathVariable Integer subscriptionId, @RequestBody PaymentDTO paymentDTO) {
-            return paymentService.processPaymentForSubscription(subscriptionId, paymentDTO);
+    public ResponseEntity<?> processPaymentForSubscription( @PathVariable Integer subscriptionId, @RequestBody PaymentDTO paymentDTO) {
+            return paymentService.processPaymentForSubscription( subscriptionId, paymentDTO);
 
     }
 

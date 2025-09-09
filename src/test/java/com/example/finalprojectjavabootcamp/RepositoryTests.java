@@ -1,10 +1,7 @@
 package com.example.finalprojectjavabootcamp;
 
 import com.example.finalprojectjavabootcamp.Model.*;
-import com.example.finalprojectjavabootcamp.Repository.BuyerRepository;
-import com.example.finalprojectjavabootcamp.Repository.CallRepository;
-import com.example.finalprojectjavabootcamp.Repository.SellerRepository;
-import com.example.finalprojectjavabootcamp.Repository.SubscriptionRepository;
+import com.example.finalprojectjavabootcamp.Repository.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+
+
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
@@ -29,6 +35,9 @@ public class RepositoryTests {
     private SubscriptionRepository subscriptionRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private CallRepository callRepository;
 
     Buyer buyer;
@@ -37,6 +46,7 @@ public class RepositoryTests {
     User user;
 
 
+    private Call call1, call2;
 
     @BeforeEach
     void setUp() {
@@ -90,6 +100,25 @@ public class RepositoryTests {
         Assertions.assertThat(found).isNotNull();
         Assertions.assertThat(found.getStatus()).isEqualTo("ACTIVE");
     }
+
+
+    @Test
+    void testFindUserByEmail() {
+        // Arrange
+        User user = new User();
+        user.setName("Fahad");
+        user.setEmail("fahad@example.com");
+        user = userRepository.save(user);
+
+        // Act
+        User foundUser = userRepository.findUserByEmail("fahad@example.com");
+
+        // Assert
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getName()).isEqualTo("Fahad");
+    }
+
+
 
 
 

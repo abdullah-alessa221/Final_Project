@@ -13,7 +13,6 @@ import org.hibernate.annotations.Check;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Check(constraints = "LOWER(real_estate_type) IN ('apartment','villa','townhouse','duplex', 'studio', 'penthouse', 'store', 'farm', 'land', 'other')")
 public class RealEstateListing {
 
     @Id

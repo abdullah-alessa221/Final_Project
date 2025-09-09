@@ -2,20 +2,21 @@ package com.example.finalprojectjavabootcamp.Service;
 
 import com.example.finalprojectjavabootcamp.Api.ApiException;
 import com.example.finalprojectjavabootcamp.DTOIN.BuyerDTOIn;
+import com.example.finalprojectjavabootcamp.DTOOUT.ProductDTOOut;
 import com.example.finalprojectjavabootcamp.Model.Buyer;
 import com.example.finalprojectjavabootcamp.Model.Listing;
 import com.example.finalprojectjavabootcamp.Model.User;
 import com.example.finalprojectjavabootcamp.Repository.BuyerRepository;
-import com.example.finalprojectjavabootcamp.Repository.ListingRepository;
-import com.example.finalprojectjavabootcamp.Repository.NegotiationRepository;
 import com.example.finalprojectjavabootcamp.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -90,7 +91,7 @@ public class BuyerService {
         userRepository.save(user);
     }
 
-    public List<Listing> getListingsByFilters(String type, String query, Boolean getOlder){
+    public List<ProductDTOOut> getListingsByFilters(String type, String query, Boolean getNewer){
         List<Listing> listings = listingService.getListingByStatus("listed");
         if (type != null && !listings.isEmpty()){
             listings.retainAll(listingService.getListingByType(type));
@@ -101,11 +102,34 @@ public class BuyerService {
         if (listings.isEmpty()){
             throw new ApiException("No listings found under these filters");
         }
-        if (getOlder){
-            listings.sort(Comparator.comparing(Listing::getCreated_at).reversed());
-            return listings;
+        if (getNewer){
+            listings.sort(Comparator.comparing(listing -> listing.getCreated_at() != null ? listing.getCreated_at() : LocalDateTime.MIN, Comparator.reverseOrder()));
+            return listings.stream()
+                    .map(listing -> {
+                        ProductDTOOut dto = new ProductDTOOut();
+                        dto.setTitle(listing.getTitle());
+                        dto.setDescription(listing.getDescription());
+                        dto.setType(listing.getType().equals("car") ? "car" : "real_estate");
+                        dto.setPrice(listing.getLeast_price());
+                        dto.setCity(listing.getCity());
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
         }
-        listings.sort(Comparator.comparing(Listing::getCreated_at));
-        return listings;
+        listings.sort(Comparator.comparing(listing -> listing.getCreated_at() != null ? listing.getCreated_at() : LocalDateTime.MIN));
+
+        return listings.stream()
+                .map(listing -> {
+                    ProductDTOOut dto = new ProductDTOOut();
+                    dto.setTitle(listing.getTitle());
+                    dto.setDescription(listing.getDescription());
+                    dto.setType(listing.getType().equals("car") ? "car" : "real_estate");
+                    dto.setPrice(listing.getLeast_price());
+                    dto.setCity(listing.getCity());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+
     }
 }

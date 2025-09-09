@@ -28,6 +28,7 @@ public class CallLogService {
 
     private final CallLogRepository callRepository;
     private final SellerRepository sellerRepository;
+    private final AiService aiService;
 
     private final OkHttpClient client = new OkHttpClient.Builder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -207,18 +208,34 @@ public class CallLogService {
     }
 
     private String extractTranscriptSummary(JsonNode callNode) {
-        // Try different possible locations for transcript summary
-        if (callNode.has("analysis") && callNode.get("analysis").has("summary")) {
-            return callNode.get("analysis").get("summary").asText();
+        // 1) Extract
+        String summary = null;
+
+        JsonNode n = callNode.path("analysis").path("summary");
+        if (n.isTextual()) summary = n.asText();
+
+        if (summary == null) {
+            n = callNode.path("transcript").path("summary");
+            if (n.isTextual()) summary = n.asText();
         }
-        if (callNode.has("transcript") && callNode.get("transcript").has("summary")) {
-            return callNode.get("transcript").get("summary").asText();
+
+        if (summary == null) {
+            n = callNode.path("summary");
+            if (n.isTextual()) summary = n.asText();
         }
-        if (callNode.has("summary")) {
-            return callNode.get("summary").asText();
+
+        if (summary == null || summary.isBlank()) return null;
+
+        // 2) Always translate to Arabic
+        try {
+            return aiService.chat("translate_to_arabic", summary);
+        } catch (Exception e) {
+            // If you truly want Arabic-only, return null here instead of the English summary.
+            // return null;
+            return summary; // graceful fallback (optional)
         }
-        return null; // No summary found
     }
+
 
     private LocalDateTime parseDateTime(String dateTimeString) {
         if (dateTimeString == null || dateTimeString.isEmpty()) {

@@ -32,7 +32,6 @@ public class Negotiation {
     private Listing listing;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "negotiation")
-    @PrimaryKeyJoinColumn
     private Payment payment;
 
     @ManyToOne

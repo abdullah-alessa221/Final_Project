@@ -2,6 +2,7 @@ package com.example.finalprojectjavabootcamp.Controller;
 
 import com.example.finalprojectjavabootcamp.Api.ApiResponse;
 import com.example.finalprojectjavabootcamp.DTOIN.BuyerDTOIn;
+import com.example.finalprojectjavabootcamp.DTOOUT.ProductDTOOut;
 import com.example.finalprojectjavabootcamp.Model.Buyer;
 import com.example.finalprojectjavabootcamp.Model.Listing;
 import com.example.finalprojectjavabootcamp.Model.User;
@@ -53,9 +54,9 @@ public class BuyerController {
     public ResponseEntity<?> filterListings(
             @RequestParam(required = false) String type,
             @RequestParam(required = false, defaultValue = "") String query,
-            @RequestParam(required = false, defaultValue = "false") Boolean getOlder
+            @RequestParam Boolean getNewer
     ) {
-        List<Listing> result = buyerService.getListingsByFilters(type, query, getOlder);
+        List<ProductDTOOut> result = buyerService.getListingsByFilters(type, query, getNewer);
         return ResponseEntity.ok(result);
     }
 

@@ -80,8 +80,9 @@ public class SubscriptionService {
 
     public void setPhoneNumber(Integer subscriptionId, String phoneNumberId){
         Subscription subscription = subscriptionRepository.findSubscriptionById(subscriptionId);
-        if (subscription == null) throw new ApiException("Subscription not found");
+        if (subscription == null || subscription.getEndDate().isBefore(LocalDateTime.now())) throw new ApiException("Subscription not found");
         subscription.setPhoneNumberId(phoneNumberId);
+        subscriptionRepository.save(subscription);
     }
 
     public Subscription getSubscriptionById(Integer id){

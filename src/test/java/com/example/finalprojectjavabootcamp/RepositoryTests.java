@@ -102,6 +102,25 @@ public class RepositoryTests {
     }
 
 
+    @Test
+    void testFindUserByEmail() {
+        // Arrange
+        User user = new User();
+        user.setName("Fahad");
+        user.setEmail("fahad@example.com");
+        user = userRepository.save(user);
+
+        // Act
+        User foundUser = userRepository.findUserByEmail("fahad@example.com");
+
+        // Assert
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getName()).isEqualTo("Fahad");
+    }
+
+
+
+
 
 
 }

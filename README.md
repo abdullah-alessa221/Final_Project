@@ -8,7 +8,6 @@
 - **Moyasar** (payments)  
 - **WhatsApp Cloud API** (notifications)  
 - **Adobe Acrobat PDF API** (documents)  
-- **Fireflies** (AI meeting/transcript agent)  
 - **OpenAI via Spring AI** (LLM prompts: negotiation, summaries, translation)
 - **VAPI** (AI agent calls)
 

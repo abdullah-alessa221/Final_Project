@@ -1,4 +1,3 @@
-<img width="4832" height="530" alt="final drawio" src="https://github.com/user-attachments/assets/63c06de9-2dd2-4412-8db0-3131b7901745" /># Fawid
 **Version:** 1.0  
 **Developers:** Hatem Alawwad - ESSA ALGHANIM - ABDULLAH ALESSA
 

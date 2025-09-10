@@ -14,7 +14,7 @@
 
 ## Overview
 **Fawid** is a digital platform that streamlines buying and selling for **cars** and **real estate** in Saudi Arabia.  
-It combines structured listings, **AI-assisted negotiation**, secure **payments**, and **document automation**—with multi-channel notifications—so deals close faster and with more trust.
+It combines structured listings, **AI-assisted negotiation**, secure **payments**, and **document automation** —with notifications—so deals close faster and with more trust.
 
 ---
 
@@ -29,7 +29,6 @@ It combines structured listings, **AI-assisted negotiation**, secure **payments*
 ## Features
 ### Listings
 - Create & manage **car** and **real estate** listings.  
-- Saudi-friendly fields (fuel 91/95, Arabic city names, etc.).  
 - Rich search with pagination & sorting.
 
 ### Negotiations & AI
@@ -39,16 +38,15 @@ It combines structured listings, **AI-assisted negotiation**, secure **payments*
 
 ### Payments & Documents
 - Moyasar credit card flow with 3-D Secure and callbacks.  
-- Auto-generate PDF **contracts/invoices** via Adobe API.  
+- Auto-generate PDF invoices via Adobe API.  
 - Store payment IDs/status and link to deals.
 
 ### Notifications
-- WhatsApp messages for updates and receipts.  
-- Email for OTP, summaries, and documents.  
-- Call logs and (optional) call summaries.
+- WhatsApp messages for updates, invoices and OTP.  
+- Call logs call summaries.
 
 ### Subscriptions & Ratings
-- Plans with feature flags (e.g., auto-negotiation).  
+- Plans with feature flags.  
 - Post-deal ratings & reviews.
 
 ---

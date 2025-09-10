@@ -7,7 +7,7 @@
 ## APIs fetched:
 - **Moyasar** (payments)  
 - **WhatsApp Cloud API** (notifications)  
-- **Adobe Acrobat PDF API** (contracts & documents)  
+- **Adobe Acrobat PDF API** (documents)  
 - **Fireflies** (AI meeting/transcript agent)  
 - **OpenAI via Spring AI** (LLM prompts: negotiation, summaries, translation)
 - **VAPI** (AI agent calls)
@@ -68,5 +68,8 @@ It combines structured listings, **AI-assisted negotiation**, secure **payments*
 ## DP Diagram
 
 <img width="735" height="684" alt="Screenshot 1447-03-18 at 7 05 35 AM" src="https://github.com/user-attachments/assets/ade08d7c-6f09-4e9c-a27f-5f0ec7fb08f9" />
+
+
+
 
 

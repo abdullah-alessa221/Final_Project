@@ -69,6 +69,122 @@ It combines structured listings, **AI-assisted negotiation**, secure **payments*
 <img width="735" height="684" alt="Screenshot 1447-03-18 at 7 05 35 AM" src="https://github.com/user-attachments/assets/ade08d7c-6f09-4e9c-a27f-5f0ec7fb08f9" />
 
 
+# API Endpoints 
+
+
+## Abdullah
+
+## Buyer
+- `updateBuyer` — Update buyer profile.  
+- `requestOtp` — Request OTP for buyer registration.  
+- `confirmOtp` — Confirm OTP to complete buyer registration.  
+- `filterListings` — Filter/search listings for the buyer.  
+
+## Seller
+- `updateSeller` — Update seller profile.  
+- `requestOtp` — Request OTP for seller registration.  
+- `confirmOtp` — Confirm OTP for seller registration.  
+- `getMyListingsByFilters` — Get the seller’s listings using filters.  
+- `getMyNegotiationsStats` — Get summary stats for the seller’s negotiations.  
+
+## User
+- `getAllUsers` — List all users.  
+- `getUserById` — Get a single user by ID.  
+- `deleteUser` — Delete a user by ID.  
+- `getAllUsersDTO` — List users (DTO projection).  
+- `getAllSellersDTO` — List sellers (DTO projection).  
+- `getAllBuyerDTO` — List buyers (DTO projection).  
+- `blockUser` — Block a user.  
+- `getBlockedUsers` — List blocked users.  
+- `activeUser` — Activate/unblock a user.  
+
+# Essa
+
+## CarListing
+- `getCarListings` — Get all car listings.  
+- `listCar` — Create a new car listing.  
+
+## RealEstateListing
+- `getRealEstateListings` — Get all real-estate listings.  
+- `listRealEstate` — Create a new real-estate listing.  
+
+## Listing
+- `getAllListings` — Get all listings (cars + real estate).  
+- `getListingsBySeller` — Get listings for the current seller.  
+- `getListingsByStatus` — Filter listings by status.  
+- `getListingsByType` — Filter listings by type/subtype.  
+- `searchListings` — Search listings by query.  
+- `getListingById` — Get a listing by ID.  
+- `deleteListing` — Delete a listing by ID.  
+
+## Search (saved searches & results)
+- `createCarSearch` — Save a car search for a buyer.  
+- `createRealEstateSearch` — Save a real-estate search for a buyer.  
+- `getSearchResults` — Get results for a saved search.   
+
+## Payment
+- `getAllPayments` — List all payment records.  
+- `getPaymentById` — Get a payment record by DB ID.  
+- `getPaymentStatus` — Check gateway status by payment ID.  
+- `processPayment` — Create/process payment for a negotiation.  
+- `processPaymentForSubscription` — Process payment for a subscription plan.  
+- `handlePaymentCallback` — Handle gateway callback (status update).  
+
+## CallLog
+- `syncCallLogsFromApi` — Sync/import call logs for a seller from external provider.  
+- `getAllCallLogs` — List call logs.  
+- `getCallLogById` — Get a call log by internal ID.  
+- `getCallLogsByPhoneNumber` — Filter by phone number.  
+- `getCallLogsByStartedAt` — Filter by start timestamp.  
+- `getCallLogsByStatus` — Filter by status.  
+- `getCallLogsBySeller` — Filter by seller ID.  
+- `getCallLogsByDateRange` — Filter by date range.  
+- `getCallLogsBySellerAndStatus` — Filter by seller + status.  
+
+## Rating
+- `getAllByBuyer` — Ratings visible to the buyer.  
+- `getBySeller` — Ratings visible to the seller.  
+- `addRating` — Buyer rates a seller for a completed deal.  
+
+
+## Hatem
+
+## Negotiation
+- `list` — List negotiations.  
+- `get` — Get a negotiation by ID.  
+- `createAi` — Start an AI-assisted negotiation for a listing.  
+- `createManual` — Start a manual negotiation for a listing.  
+- `propose` — Submit an offer/counter-offer.  
+- `accept` — Accept a negotiation (lock agreed price).  
+- `reject` — Reject/close a negotiation.  
+- `enable` — Enable AI assistant for a negotiation.  
+- `disable` — Disable AI assistant.  
+
+## NegotiationMessage
+- `listAll` — List all messages in a negotiation.  
+- `sendByBuyer` — Buyer posts a message.  
+- `sendBySeller` — Seller posts a message.  
+- `summarize` — AI summary of a negotiation thread.
+
+
+
+## Invoice
+- `getAllInvoices` — List generated invoices/contracts.  
+- `getInvoiceById` — Get invoice metadata by ID.  
+- `downloadInvoice` — Download invoice PDF.  
+- `generateInvoice` — Generate invoice/contract for a payment.  
+
+
+## Subscription
+- `getAll` — List subscription plans/user subscriptions.  
+- `getSubscriptionById` — Get a subscription by ID.  
+- `subscribeMonthly` — Start monthly subscription (after payment).  
+- `subscribeYearly` — Start yearly subscription (after payment).  
+- `cancelSubscription` — Cancel a subscription.  
+- `setPhoneId` — Attach a device/phone ID to a subscription.  
+
+
+
 
 
 

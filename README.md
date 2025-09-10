@@ -1,4 +1,4 @@
-# Fawidh  
+# Fawid
 **Version:** 1.0  
 **Developers:** Hatem Alawwad - ESSA ALGHANIM - ABDULLAH ALESSA
 
@@ -15,7 +15,7 @@
 ---
 
 ## Overview
-**Fawidh** is a digital platform that streamlines buying and selling for **cars** and **real estate** in Saudi Arabia.  
+**Fawid** is a digital platform that streamlines buying and selling for **cars** and **real estate** in Saudi Arabia.  
 It combines structured listings, **AI-assisted negotiation**, secure **payments**, and **document automation**—with multi-channel notifications—so deals close faster and with more trust.
 
 ---

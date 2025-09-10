@@ -1,4 +1,4 @@
-# Fawid
+<img width="4832" height="530" alt="final drawio" src="https://github.com/user-attachments/assets/63c06de9-2dd2-4412-8db0-3131b7901745" /># Fawid
 **Version:** 1.0  
 **Developers:** Hatem Alawwad - ESSA ALGHANIM - ABDULLAH ALESSA
 
@@ -54,20 +54,42 @@ It combines structured listings, **AI-assisted negotiation**, secure **payments*
 
 ---
 
-## Tech Stack
-- **Backend:** Spring Boot (Java 17)  
-- **Database:** MySQL (AWS RDS)  
-- **ORM:** Hibernate with JPA  
-- **Deployment:** AWS (Elastic Beanstalk / ECS)  
-- **CI/CD:** GitHub  
-- **AI:** Spring AI (OpenAI compatible)
+##Tech
 
+| Tech                  | Purpose                        |
+| --------------------- | ------------------------------ |
+| Java                  | Programming language           |
+| Spring Boot           | Backend framework              |
+| Spring Web            | Build RESTful APIs             |
+| Spring Data JPA       | Database operations            |
+| Spring Security       | Authentication & Authorization |
+| Spring AI             | AI integration with Spring project |
+| Jakarta Validation    | User input validation          |
+| MySQL                 | Relational databases           |
+| Lombok                | Reduce boilerplate code        |
+| Maven                 | Build & dependency management  |
+| JUnit                 | Unit testing                   |
+| AWS                   | Cloud deployment               |
+| GitHub                | Version control & collaboration |
+| Moyasar               | Saudi payment gateway for secure transactions |
+| Adobe Acrobat PDF API | Generate & export invoices     |
+| OpenAI API            | LLM for negotiations, summaries & translations |
+| VAPI                  | AI voice agent for automated phone calls |
+| UltraMessage          | WhatsApp integration           |
+| Postman               | API testing                    |
+| Figma                 | UI/UX design                   |
+| Linear                | Task management platform       |
 ---
 
 ## DP Diagram
 
 <img width="735" height="684" alt="Screenshot 1447-03-18 at 7 05 35 AM" src="https://github.com/user-attachments/assets/ade08d7c-6f09-4e9c-a27f-5f0ec7fb08f9" />
 
+## Usecase
+<img width="4832" height="530" alt="final drawio" src="https://github.com/user-attachments/assets/d834d00d-5088-4d00-a6db-2a8cb67352b7" />
+
+## Class Diagram
+<img width="2672" height="1924" alt="Untitled_2" src="https://github.com/user-attachments/assets/c6c5ab10-0350-4250-a53d-c6b6a5402be8" />
 
 # API Endpoints 
 
